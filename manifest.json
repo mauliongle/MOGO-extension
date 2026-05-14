@@ -1,0 +1,79 @@
+{
+  "manifest_version": 3,
+  "name": "MOGO - Email & Phone Finder",
+  "description": "Find anyone's B2B email and phone in seconds. Scrape LinkedIn Sales Navigator data with one click.",
+  "version": "2.0.0",
+  "author": "MOGO",
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+
+  "action": {
+    "default_icon": "icons/icon32.png",
+    "default_title": "MOGO",
+    "default_popup": "popup.html"
+  },
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "js": ["linkedin.js"],
+      "css": ["widget.css"],
+      "matches": ["https://*.linkedin.com/sales/*", "https://*.linkedin.com/recruiter/*", "https://*.linkedin.com/search/*", "https://www.linkedin.com/posts/*"]
+    },
+    {
+      "js": ["apollo.js"],
+      "css": ["widget.css"],
+      "matches": ["https://app.apollo.io/*"]
+    },
+    {
+      "matches": ["https://*.linkedin.com/*"],
+      "js": ["linkedin_profile.js"],
+      "css": ["widget.css"],
+      "all_frames": true
+    },
+    {
+      "matches": ["https://*.linkedin.com/sales/lead/*"],
+      "js": ["salesnav_profile.js"],
+      "all_frames": true
+    },
+    {
+      "matches": ["https://www.crunchbase.com/person/*"],
+      "js": ["crunchbase.js"],
+      "all_frames": true
+    }
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": ["storage", "tabs"],
+
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "https://app.apollo.io/*",
+    "http://localhost:7823/*"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "components/*",
+        "images/*",
+        "icons/*",
+        "pages/*",
+        "s_inj.js",
+        "apollo_inject.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

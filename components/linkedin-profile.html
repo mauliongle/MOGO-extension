@@ -1,0 +1,61 @@
+<div style="width: 424px; background: white; border-radius: 8px; flex-direction: column; justify-content: flex-start; align-items: center; display: inline-flex">
+    <div style="align-self: stretch; padding-left: 24px; padding-right: 24px; padding-top: 16px; padding-bottom: 16px; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+      <div style="flex: 1 1 0; color: #111827; font-size: 20px; font-family: Inter; font-weight: 600; line-height: 32px; word-wrap: break-word">Profile enrichment</div>
+      <img id="closeBtn" src="/icons/close.svg" style="cursor: pointer;">
+    </div>
+    <div style="align-self: stretch; padding-top: 16px; padding-bottom: 24px; padding-left: 24px; padding-right: 24px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 32px; display: flex">
+      <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+        <div style="padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px; background: rgba(232, 76, 75, 0.15); border-radius: 40px; flex-direction: column; justify-content: center; align-items: center; gap: 8px; display: inline-flex">
+          <img style="height: 32px; border-radius: 50%;" id="profilPicture" src="/icons/no_profile.svg">
+        </div>
+        <div style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
+          <div id="profileName" style="color: #111827; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word"></div>
+          <div id="profileCompany" style="color: #6B6B6B; font-size: 14px; font-family: Inter; font-weight: 400; line-height: 24px; word-wrap: break-word"></div>
+        </div>
+      </div>
+      <div style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+        <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+          <div style="color: #111827; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 20px; word-wrap: break-word">Contact list</div>
+          <div style="color: #6B6B6B; font-size: 14px; font-family: Inter; font-weight: 400; line-height: 20px; word-wrap: break-word">Select the list where the contact will be saved</div>
+        </div>
+        <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+          <div style="flex: 1 1 0; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex">
+            <select id="findyListSelect" style="max-width: 244px; align-self: stretch; height: 40px; padding-left: 12px; padding-right: 12px; padding-top: 9px; padding-bottom: 9px; background: white; border-radius: 4px; border: 0.50px #E0E0E0 solid; justify-content: flex-start; align-items: center; gap: 12px; display: inline-flex">
+              <option value="0">All contacts</option>
+            </select>
+          </div>
+          <div id="createListBtn" style="cursor: pointer; padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 16px; border-radius: 4px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 8px; display: flex">
+            <img src="/icons/add.svg">
+            <div style="flex: 1 1 0; text-align: center; color: #E84C4B; font-size: 14px; font-family: Inter; font-weight: 600; line-height: 20px; word-wrap: break-word">Create list</div>
+          </div>
+        </div>
+      </div>
+      <div id="creditsSection" style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+        <div style="align-self: stretch; justify-content: space-between; align-items: center; gap: 8px; display: inline-flex">
+          <div style="color: #111827; font-size: 14px; font-family: Inter; font-weight: 400; line-height: 20px; word-wrap: break-word">Finder credits balance</div>
+          <div id="finderCreditsBalance" style="color: #16a34a; font-size: 16px; font-family: Inter; font-weight: 600; line-height: 20px; word-wrap: break-word">∞ Unlimited</div>
+        </div>
+      </div>
+    </div>
+    <div style="align-self: stretch; padding-left: 24px; padding-right: 24px; padding-top: 16px; padding-bottom: 16px; border-top: 0.50px #E0E0E0 solid; justify-content: flex-end; align-items: center; gap: 16px; display: inline-flex">
+      <div id="getPhoneBtn" style="cursor: pointer; padding-left: 16px; padding-right: 16px; padding-top: 10px; padding-bottom: 10px; background: #E84C4B; border-radius: 8px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 10px; display: flex">
+        <div style="flex: 1 1 0; display: flex; justify-content: center; text-align: center; color: white; font-size: 14px; font-family: Inter; font-weight: 600; line-height: 20px; word-wrap: break-word">
+          <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto; padding-right:4px;" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+</svg>
+          Get phone
+        </div>
+      </div>
+      <div id="getEmailBtn" style="cursor: pointer; padding-left: 16px; padding-right: 16px; padding-top: 10px; padding-bottom: 10px; background: #E84C4B; border-radius: 8px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 10px; display: flex">
+        <div style="flex: 1 1 0; display: flex; justify-content: center; text-align: center; color: white; font-size: 14px; font-family: Inter; font-weight: 600; line-height: 20px; word-wrap: break-word">
+          <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto; padding-right:4px;" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+  <path d="M3 7l9 6l9 -6" />
+</svg>
+        Get email
+        </div>
+      </div>
+    </div>
+  </div>

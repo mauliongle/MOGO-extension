@@ -1,0 +1,891 @@
+@app: findy--;
+@font-family: Helvetica Neue,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Fira Sans,Droid Sans,sans-serif;
+
+@w-width: 340px;
+@w-height: 600px;
+@w-minheight: 330px;
+@bg: #0B1C4A;
+@main: #A771FE;
+@main_hover: #782FEF;
+@main_active: #5C18CB;
+@light: #EAE6FF;
+@text: #04133B;
+@dummy: #F0F2F4;
+@N200: #7A869A;
+
+.findy--flex {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
+    &-sb {
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
+    &-c {
+        -webkit-justify-content: center;
+        justify-content: center;
+    }
+    &-col {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    &-str {
+        -webkit-align-items: stretch;
+        -webkit-box-align: stretch;
+        align-items: stretch;
+    }
+    &-1 {
+        flex: 1
+    }
+}
+
+.findy--{
+
+    &widget {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        border-radius: 10px;
+        position: fixed;
+        top: 60px;
+        right: 25px;
+        z-index: 1111;
+        width: @w-width;
+        height: @w-height;
+        background: @bg;
+        font-family: @font-family;
+        font-size: 12px;
+        color: @text;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+        &.findy--unsigned {
+            .findy--credits-widget,.findy--tabs-widget {
+                display: none;
+            }
+        }
+
+        .findy--header-expanded {
+            cursor: move;
+        }
+
+        &.findy--min {
+            height: 60px;
+            width: 60px;
+            .findy--content-wrapper-widget,
+            .findy--header-expanded,
+            .findy--credits-widget,
+            .findy--tabs-widget {
+                display: none;
+            }
+            .findy--header-minimized {
+                display: block;
+            }
+        }
+
+        a, a:visited {
+            color:@main;
+            svg path {
+                fill: @main;
+            }
+            &:hover, &:focus {
+                color: @main_hover;
+                svg path {
+                    fill: @main_hover;
+                }
+            }
+            &:active {
+                color: @main_active;
+                svg path {
+                    fill: @main_active;
+                }
+            }
+        }
+    }
+
+    &header-widget {
+        height: 60px;
+        padding: 0 15px;
+        a {
+            &:hover {
+                color: rgba(255,255,255,0.8) !important;
+            }
+        }
+        .findy--toggle {
+            text-decoration: none;
+            width: 28px;
+            height: 28px;
+            position: relative;
+            border-radius: 3px;
+            transition: background 0.25s;
+            cursor: pointer;
+            &:before {
+                content: "";
+                position: absolute;
+                width: 20px;
+                height: 3px;
+                border-radius: 10px;
+                background: #fff;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            &:hover {
+                background: #1D3161;
+            }
+        }
+
+        .findy--header-expanded {
+            height: 60px;
+            position: relative;
+            &:after {
+                content: "";
+                width: 20px;
+                height: 1px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #1D3161;
+                box-shadow: 0 4px 0 #1D3161, 0 -4px 0 #1D3161, 0 1px 0 #000, 0 5px 0 #000, 0 -3px 0 #000;
+            }
+        }
+        .findy--header-minimized {
+            display: none;
+            width: 60px;
+            height: 60px;
+            margin-left: -15px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: box-shadow 0.25s;
+            //box-shadow: inset 0 0 0 1px @bg, inset 0 0 0 2px #C94CB9;
+            &:hover {
+                box-shadow: inset 0 0 0 1px @bg, inset 0 0 0 2px #E47CCD;
+            }
+        }
+    }
+
+    &logo {
+        background-size: 100%;
+        width: 90px;
+        height: 23px;
+        position: relative;
+        &.findy--beta::before {
+            content: "Beta";
+            position: absolute;
+            left: 100%;
+            top: 2px;
+            margin-left: 3px;
+            background: fade(#C0A2FF, 10%);
+            border-radius: 100px;
+            font-size: 12px;
+            line-height: 19px;
+            padding: 0 10px;
+            color: #C0A2FF;
+            font-weight: normal;
+        }
+    }
+    &logo-dark {
+        background-size: 100%;
+        width: 90px;
+        height: 23px;
+    }
+
+    &content- {
+        &wrapper-widget {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            margin: 0 15px 15px 15px;
+            background: #fff;
+            border-radius: 5px;
+            //height: calc(100% - 75px);
+            overflow: hidden;
+        }
+
+        &unauth {
+            text-align: center;
+            padding: 15px 25px;
+            .findy--open-auth {
+                margin: 25px 0;
+            }
+        }
+
+        &header {
+            font-size: 20px;
+            line-height: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        &description {
+            color: #546080;
+            margin-bottom: 10px;
+        }
+
+        &instructions {
+            overflow: hidden;
+            align-self: flex-start;
+            flex: 1;
+            background: #F4F5F7;
+            border-radius: 5px;
+            height: 100%;
+            ol {
+                margin-left: 14px;
+                a{
+                    word-break: break-all;
+                }
+            }
+            li {
+                margin-bottom: 10px;
+                .findy--button-small {
+                    margin-left: 5px;
+                }
+            }
+            .findy--heading {
+                font-size: 14px;
+                margin-bottom: 15px;
+                font-weight: 500;
+                padding-top: 10px;
+            }
+            .findy--content {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: calc(100% - 50px);
+                &::-webkit-scrollbar {
+                    width: 7px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: #A5ADBA;
+                    border-radius: 5px;
+                    border: 2px solid #fff;
+                }
+            }
+            .findy--content-soon {
+                display: none;
+                position: relative;
+                &:after {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    content: "Coming soon";
+                    color: #17C4A8;
+                    font-size: 10px;
+                    line-height: 20px;
+                    padding: 0 5px;
+                    background: fade(#17C4A8, 10%);
+                    border-radius: 3px;
+                    z-index: 2;
+                }
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 1;
+                    background: rgba(255,255,255,.5);
+                }
+            }
+            .findy-page-header {
+                line-height: 44px;
+                font-size: 16px;
+                font-weight: 400;
+                color: #2F3D64;
+                border-bottom: 1px solid #EBECF0;
+                margin-bottom: 5px;
+                padding: 0 15px;
+                background: #fff;
+                border-radius: 5px 5px 0 0;
+            }
+        }
+
+        &profile {
+            overflow: hidden;
+            align-self: flex-start;
+            flex: 1;
+            background: #F4F5F7;
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+            .findy--content {
+                width: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: 100%;
+                &::-webkit-scrollbar {
+                    width: 7px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: #A5ADBA;
+                    border-radius: 5px;
+                    border: 2px solid #fff;
+                }
+            }
+            .findy--content-senction {
+                padding-top: 13px;
+                padding-bottom: 13px;
+            }
+        }
+
+        &widget {
+            flex: 1;
+            height: 100%;
+            justify-content: center;
+        }
+    }
+
+    &iframe-widget {
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: -10000px;
+    }
+
+    &button,
+    &search-export-button,
+    &widget button {
+        appearance: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        box-sizing: border-box;
+        position: relative;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
+        padding: 0 15px;
+        min-width: 100px;
+        height: 38px;
+        border-radius: 5px;
+        color: #FFFFFF;
+        border: 1px solid transparent;
+        background-color: @main;
+        font-family: @font-family;
+        white-space: nowrap;
+        &.findy--button-small {
+            font-size: 12px;
+            height: 30px;
+        }
+        &.findy--button-light {
+            color: @main;
+            background: @light;
+        }
+        &:hover {
+            background: @main_hover;
+            color: #fff;
+        }
+        &:active {
+            background: @main_active;
+            color: #fff;
+        }
+        svg {
+            margin-right: 5px;
+        }
+    }
+
+    &search-export-holder {
+        position: relative;
+        height: 0;
+        .findy--export {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+        .findy--logo-dark {
+            margin-right: 15px;
+        }
+        &.findy--isSN {
+            height: auto;
+            margin-bottom: 16px;
+            .findy--export {
+                position: static;
+            }
+        }
+    }
+
+    &component-loading-spinner {
+        animation: findy--rotate 1.4s linear infinite;
+        circle {
+            transform-origin: center;
+            animation: findy--dash 1.4s ease-in-out infinite;
+        }
+    }
+
+    &component-laptop-loader {
+        .findy--component-loading-spinner {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &img-login-form {
+        position: absolute;
+        width: 30%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-69%, -135%) skew(10deg, -30deg);
+    }
+}
+
+.findy--content-senction {
+    margin-bottom: 5px;
+    background: #fff;
+    padding: 0 15px;
+    border-bottom: 1px solid #EBECF0;
+}
+
+.findy--arrow-right {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.findy--modal-wrapper {
+    display: none;
+    color: @text;
+    &.findy--modal-shown {
+        display: block;
+    }
+    .findy--fader {
+        position: fixed;
+        z-index: 1000;
+        background: rgba(0,0,0,.5);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .findy--modal {
+        position: fixed;
+        padding: 25px;
+        border-radius: 5px;
+        background: #fff;
+        box-shadow: 0 8px 36px rgba(0,0,0,.16);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1001;
+    }
+}
+
+.findy--modal-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 18px;
+}
+.findy--max-number {
+    color: #A5ADBA;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+input.findy--input,input[type=number].findy--input {
+    color: @text;
+    box-shadow: 0 0 0 1px @main;
+    height: 38px;
+    border: 0;
+    &:hover, &:focus {
+        box-shadow: 0 0 0 1px @main_hover;
+        color: @text;
+    }
+    &:active {
+        background-color: lighten(@light, 3%);
+        color: @text;
+    }
+}
+
+.findy--export-inprogress,
+.findy--export-success,
+.findy--export-error {
+    display: none;
+}
+
+.findy--export-inprogress,
+.findy--export-success,
+.findy--export-error {
+    min-width: 286px;
+    text-align: center;
+    .findy--component-laptop {
+        margin: 0 auto;
+    }
+}
+.findy--export-modal {
+    .findy--export-progress-text {
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 24px;
+        margin-bottom: 8px;
+    }
+    .findy--export-advice {
+        font-size: 12px;
+        line-height: 16px;
+        color: #546080;
+        margin-bottom: 25px;
+    }
+    button {
+        &.findy--button-cancel {
+            width: 70px;
+            min-width: 70px;
+            margin-right: 5px;
+        }
+        &.findy--button-restart {
+            width: auto;
+            min-width: auto;
+            margin-right: 5px;
+        }
+        &.findy--button-start-export,
+        &.findy--button-save-export{
+            width: 130px;
+            margin-left: 5px;
+        }
+    }
+
+    .findy--export-settings {
+        .findy--buttons-pair {
+            button {
+                width: 49%;
+            }
+        }
+    }
+}
+
+.findy--logo-icon {
+    width: 16px;
+    height: 16px;
+    background-size: 100%;
+}
+
+.findy--tabs-widget {
+    color: #546080;
+    font-weight: bold;
+    text-align: center;
+    overflow: hidden;
+    height: 40px;
+    border-radius: 0 0 10px 10px;
+    .findy--tab {
+        flex: 1;
+        line-height: 40px;
+        background: #132454;
+        cursor: not-allowed;
+        &:not(.findy--tab-disabled) {
+            cursor: pointer;
+            &:hover, &.findy--tab-active {
+                background: #1D3161;
+                color: #fff;
+            }
+            &.findy--tab-active {
+                box-shadow: inset 0 3px 0 @main;
+            }
+        }
+    }
+}
+
+.findy--credits-widget {
+    padding: 0 15px;
+    margin-bottom: 15px;
+    .findy--block {
+        height: 38px;
+        box-sizing: border-box;
+    }
+    .findy--credits-flex {
+        padding: 5px 15px;
+    }
+    .findy--credits-type {
+        font-size: 14px;
+    }
+    .findy--credits-current {
+        font-size: 16px;
+    }
+    .findy--credits-total {
+        font-size: 14px;
+        color: #A5ADBA;
+    }
+    .findy--credits-sep {
+        width: 1px;
+        background: #1D3161;
+        align-self: stretch;
+        margin: 0 10px;
+    }
+    .findy--credit-add-button {
+        border: 1px solid @main;
+        border-radius: 5px;
+        width: 24px;
+        height: 24px;
+        position: relative;
+        cursor: pointer;
+        &:before,
+        &:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 2px;
+            border-radius: 5px;
+            background: @main;
+        }
+        &:after {
+            width: 2px;
+            height: 12px;
+        }
+        &:hover {
+            border-color: @main_hover;
+            background: @main_hover;
+            &:before,&:after {
+                background: #fff;
+            }
+        }
+    }
+    .findy--dashboard-button {
+        display: block;
+        position: relative;
+        width: 38px;
+        height: 38px;
+        border-radius: 5px;
+        border: 1px solid transparent;
+        img {
+            position: absolute;
+            width: 24px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        &:hover {
+            border: 1px solid @main;
+            &:after {
+                display: block;
+            }
+        }
+        &:after {
+            display: none;
+            position: absolute;
+            content: "Go to Dashboard";
+            white-space: nowrap;
+            color: #fff;
+            background: @text;
+            border-radius: 3px;
+            bottom: 100%;
+            left: 50%;
+            transform: translate(-50%, -10px);
+            font-size: 12px;
+            font-weight: normal;
+            padding: 3px 7px;
+        }
+    }
+}
+
+.findy--block {
+    border-radius: 5px;
+    background: #0F215A;
+    color: #fff;
+}
+
+.dummyCSS() {
+    border-radius: 3px;
+    background-image: linear-gradient(90deg, @dummy 8%, darken(@dummy, 5%) 18%, @dummy 33%) !important;
+    background-size: 400% 100%;
+    animation: 6s shine linear infinite;
+    &:after {
+        content: "‎";
+        color: transparent;
+    }
+    @keyframes shine {
+        to {
+            background-position-x: -400%;
+        }
+    }
+}
+.findy--dummy-block {
+    .dummyCSS();
+}
+.findy--profile-contacts {
+    position: relative;
+}
+.findy--profile-contacts-list-item {
+    margin-bottom: 10px;
+    width: 100%;
+    flex-wrap: nowrap;
+    &:last-child {
+        margin-bottom: 0;
+    }
+    .findy--copy-icon {
+        opacity: .6;
+        cursor: pointer;
+    }
+    &:hover {
+        .findy--copy-icon {
+            opacity: 1;
+        }
+    }
+}
+.findy--profile-contacts-open {
+    margin-top: 20px;
+}
+.findy--contact-type {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    margin-right: 7px;
+    &.findy--contact-type-email,
+    &.findy--contact-type-phone {
+        background: @light;
+        border-radius: 3px;
+        img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+    }
+}
+.findy--contact-text {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: @N200;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    width: 227px;
+    &.findy--text-blurred {
+        color: transparent;
+        text-shadow: 0 0 4px @N200;
+        user-select: none;
+        max-width: 100%;
+        overflow: visible;
+    }
+}
+.findy--contact-text-1 {
+    width: 155px;
+    flex: unset;
+}
+.findy--contact-text-2 {
+    width: 90px;
+    flex: unset;
+}
+.findy--dummy-button {
+    .dummyCSS();
+    color: transparent !important;
+}
+
+.findy--profile-photo {
+    .dummyCSS();
+    border-radius: 100%;
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    overflow: hidden;
+    img {
+        width: 100%;
+        background: var(--entity-ghost-person-accent-4);
+    }
+}
+.findy--profile-name {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #132454;
+    margin-bottom: 4px;
+}
+.findy--profile-job {
+    font-size: 12px;
+    line-height: 14px;
+    color: #132454;
+}
+.findy--profile-hr {
+    border-top: 0;
+    border-bottom: 1px solid #EBECF0;
+    height: 0;
+    margin: 12px 0;
+}
+.findy--no-contacts {
+    color: #C1C7D0;
+}
+
+.findy--loading {
+    .findy--profile-name {
+        .dummyCSS();
+        min-width: 100px;
+    }
+    .findy--profile-job {
+        .dummyCSS();
+        min-width: 120px;
+    }
+}
+.findy--contacts-fetching {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: fade(#fff, 90%);
+    svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -12px 0 0 -12px;
+    }
+}
+.findy--shown {
+    display: block;
+}
+.findy--toaster-widget {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+    color: @text;
+    z-index: 10;
+    .findy-toast {
+        padding: 25px 20px;
+        border-radius: 5px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(4, 19, 59, 0.3);
+        flex-wrap: nowrap;
+        display: none;
+        &.findy--toast-shown {
+            display: flex;
+        }
+    }
+    .findy--toast-message {
+        padding-left: 10px;
+    }
+}
+
+@keyframes findy--rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes findy--dash {
+    0% {
+        stroke-dasharray: 1, 60;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 45, 60;
+        stroke-dashoffset: -17;
+    }
+    100% {
+        stroke-dasharray: 45, 60;
+        stroke-dashoffset: -60;
+    }
+}

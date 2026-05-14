@@ -1,0 +1,928 @@
+.findy--flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.findy--flex-sb {
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+.findy--flex-c {
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.findy--flex-col {
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+.findy--flex-str {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  align-items: stretch;
+}
+.findy--flex-1 {
+  flex: 1;
+}
+.findy--widget {
+  display: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 10px;
+  position: fixed;
+  top: 60px;
+  right: 25px;
+  z-index: 1111;
+  width: 340px;
+  height: 600px;
+  background: #0B1C4A;
+  font-family: Helvetica Neue, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, sans-serif;
+  font-size: 12px;
+  color: #04133B;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+.findy--widget.findy--unsigned .findy--credits-widget,
+.findy--widget.findy--unsigned .findy--tabs-widget {
+  display: none;
+}
+.findy--widget .findy--header-expanded {
+  cursor: move;
+}
+.findy--widget.findy--min {
+  height: 60px;
+  width: 60px;
+}
+.findy--widget.findy--min .findy--content-wrapper-widget,
+.findy--widget.findy--min .findy--header-expanded,
+.findy--widget.findy--min .findy--credits-widget,
+.findy--widget.findy--min .findy--tabs-widget {
+  display: none;
+}
+.findy--widget.findy--min .findy--header-minimized {
+  display: block;
+}
+.findy--widget a,
+.findy--widget a:visited {
+  color: #e84c4b;
+}
+.findy--widget a svg path,
+.findy--widget a:visited svg path {
+  fill: #e84c4b;
+}
+.findy--widget a:hover,
+.findy--widget a:visited:hover,
+.findy--widget a:focus,
+.findy--widget a:visited:focus {
+  color: #e84c4b;
+}
+.findy--widget a:hover svg path,
+.findy--widget a:visited:hover svg path,
+.findy--widget a:focus svg path,
+.findy--widget a:visited:focus svg path {
+  fill: #e84c4b;
+}
+.findy--widget a:active,
+.findy--widget a:visited:active {
+  color: #5C18CB;
+}
+.findy--widget a:active svg path,
+.findy--widget a:visited:active svg path {
+  fill: #5C18CB;
+}
+.findy--header-widget {
+  height: 60px;
+  padding: 0 15px;
+}
+.findy--header-widget a:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+.findy--header-widget .findy--toggle {
+  text-decoration: none;
+  width: 28px;
+  height: 28px;
+  position: relative;
+  border-radius: 3px;
+  transition: background 0.25s;
+  cursor: pointer;
+}
+.findy--header-widget .findy--toggle:before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 3px;
+  border-radius: 10px;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.findy--header-widget .findy--toggle:hover {
+  background: #1D3161;
+}
+.findy--header-widget .findy--header-expanded {
+  height: 60px;
+  position: relative;
+}
+.findy--header-widget .findy--header-expanded:after {
+  content: "";
+  width: 20px;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1D3161;
+  box-shadow: 0 4px 0 #1D3161, 0 -4px 0 #1D3161, 0 1px 0 #000, 0 5px 0 #000, 0 -3px 0 #000;
+}
+.findy--header-widget .findy--header-minimized {
+  display: none;
+  width: 60px;
+  height: 60px;
+  margin-left: -15px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: box-shadow 0.25s;
+}
+.findy--header-widget .findy--header-minimized:hover {
+  box-shadow: inset 0 0 0 1px #0B1C4A, inset 0 0 0 2px #E47CCD;
+}
+.findy--logo {
+  background-size: 100%;
+  width: 90px;
+  height: 23px;
+  position: relative;
+}
+
+.findy--export-element {
+  margin-bottom: 15px;
+}
+
+.findy--logo.findy--beta::before {
+  content: "Beta";
+  position: absolute;
+  left: 100%;
+  top: 2px;
+  margin-left: 3px;
+  background: rgba(192, 162, 255, 0.1);
+  border-radius: 100px;
+  font-size: 12px;
+  line-height: 19px;
+  padding: 0 10px;
+  color: #C0A2FF;
+  font-weight: normal;
+}
+.findy--content-wrapper-widget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 0 15px 15px 15px;
+  background: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.findy--content-unauth {
+  text-align: center;
+  padding: 15px 25px;
+}
+.findy--content-unauth .findy--open-auth {
+  margin: 25px 0;
+}
+.findy--content-header {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.findy--content-description {
+  color: #546080;
+  margin-bottom: 10px;
+}
+.findy--content-instructions {
+  overflow: hidden;
+  align-self: flex-start;
+  flex: 1;
+  background: #F4F5F7;
+  border-radius: 5px;
+  height: 100%;
+}
+.findy--content-instructions ol {
+  margin-left: 14px;
+}
+.findy--content-instructions ol a {
+  word-break: break-all;
+}
+.findy--content-instructions li {
+  margin-bottom: 10px;
+}
+.findy--content-instructions li .findy--button-small {
+  margin-left: 5px;
+}
+.findy--content-instructions .findy--heading {
+  font-size: 14px;
+  margin-bottom: 15px;
+  font-weight: 500;
+  padding-top: 10px;
+}
+.findy--content-instructions .findy--content {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% - 50px);
+}
+.findy--content-instructions .findy--content::-webkit-scrollbar {
+  width: 7px;
+}
+.findy--content-instructions .findy--content::-webkit-scrollbar-thumb {
+  background: #A5ADBA;
+  border-radius: 5px;
+  border: 2px solid #fff;
+}
+.findy--content-instructions .findy--content-soon {
+  display: none;
+  position: relative;
+}
+.findy--content-instructions .findy--content-soon:after {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  content: "Coming soon";
+  color: #17C4A8;
+  font-size: 10px;
+  line-height: 20px;
+  padding: 0 5px;
+  background: rgba(23, 196, 168, 0.1);
+  border-radius: 3px;
+  z-index: 2;
+}
+.findy--content-instructions .findy--content-soon:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.5);
+}
+.findy--content-instructions .findy-page-header {
+  line-height: 44px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #2F3D64;
+  border-bottom: 1px solid #EBECF0;
+  margin-bottom: 5px;
+  padding: 0 15px;
+  background: #fff;
+  border-radius: 5px 5px 0 0;
+}
+.findy--content-profile {
+  overflow: hidden;
+  align-self: flex-start;
+  flex: 1;
+  background: #F4F5F7;
+  border-radius: 5px;
+  height: 100%;
+  width: 100%;
+}
+.findy--content-profile .findy--content {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+.findy--content-profile .findy--content::-webkit-scrollbar {
+  width: 7px;
+}
+.findy--content-profile .findy--content::-webkit-scrollbar-thumb {
+  background: #A5ADBA;
+  border-radius: 5px;
+  border: 2px solid #fff;
+}
+.findy--content-profile .findy--content-senction {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+.findy--content-widget {
+  flex: 1;
+  height: 100%;
+  justify-content: center;
+}
+.findy--iframe-widget {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: -10000px;
+}
+.findy--button,
+.findy--search-export-button,
+.findy--widget button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  padding: 0 15px;
+  min-width: 100px;
+  height: 38px;
+  border-radius: 5px;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  background-color: #e84c4b;
+  font-family: Helvetica Neue, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, sans-serif;
+  white-space: nowrap;
+}
+.findy--button.findy--button-small,
+.findy--search-export-button.findy--button-small,
+.findy--widget button.findy--button-small {
+  font-size: 12px;
+  height: 30px;
+}
+.findy--button.findy--button-light,
+.findy--search-export-button.findy--button-light,
+.findy--widget button.findy--button-light {
+  color: #e84c4b;
+  background: #fbc9ca;
+}
+.findy--button:hover,
+.findy--search-export-button:hover,
+.findy--widget button:hover {
+  background: #b91c1c;
+  color: #fff;
+}
+.findy--button:active,
+.findy--search-export-button:active,
+.findy--widget button:active {
+  background: #b91c1c;
+  color: #fff;
+}
+.findy--button svg,
+.findy--search-export-button svg,
+.findy--widget button svg {
+  margin-right: 5px;
+}
+.findy--search-export-holder {
+  position: relative;
+  height: 0;
+}
+.findy--search-export-holder .findy--export {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.findy--search-export-holder .findy--logo-dark {
+  margin-right: 15px;
+}
+.findy--search-export-holder.findy--isSN {
+  height: auto;
+  margin-bottom: 16px;
+}
+.findy--search-export-holder.findy--isSN .findy--export {
+  position: static;
+}
+.findy--component-loading-spinner {
+  animation: findy--rotate 1.4s linear infinite;
+}
+.findy--component-loading-spinner circle {
+  transform-origin: center;
+  animation: findy--dash 1.4s ease-in-out infinite;
+}
+.findy--component-laptop-loader .findy--component-loading-spinner {
+  width: 100%;
+  height: 100%;
+}
+.findy--img-login-form {
+  position: absolute;
+  width: 30%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-69%, -135%) skew(10deg, -30deg);
+}
+.findy--content-senction {
+  margin-bottom: 5px;
+  background: #fff;
+  padding: 0 15px;
+  border-bottom: 1px solid #EBECF0;
+}
+.findy--arrow-right {
+  display: inline-block;
+  vertical-align: middle;
+}
+.findy--modal-wrapper {
+  display: none;
+  color: #04133B;
+}
+.findy--modal-wrapper.findy--modal-shown {
+  display: block;
+}
+.findy--modal-wrapper .findy--fader {
+  position: fixed;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.findy--modal-wrapper .findy--modal {
+  position: fixed;
+  padding: 25px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.16);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+}
+.findy--modal-title {
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 18px;
+}
+.findy--modal-credits-preview {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 15px;
+}
+.findy--max-number {
+  color: #A5ADBA;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-bottom: 15px;
+}
+input.findy--input,
+input[type=number].findy--input {
+  color: #04133B;
+  box-shadow: 0 0 0 1px #e84c4b;
+  height: 38px;
+  border: 0;
+}
+input.findy--input:hover,
+input[type=number].findy--input:hover,
+input.findy--input:focus,
+input[type=number].findy--input:focus {
+  box-shadow: 0 0 0 1px #e84c4b;
+  color: #04133B;
+}
+input.findy--input:active,
+input[type=number].findy--input:active {
+  background-color: #f7f5ff;
+  color: #04133B;
+}
+.findy--export-inprogress,
+.findy--export-success,
+.findy--export-error {
+  display: none;
+}
+.findy--export-inprogress,
+.findy--export-success,
+.findy--export-error {
+  min-width: 286px;
+  text-align: center;
+}
+.findy--export-inprogress .findy--component-laptop,
+.findy--export-success .findy--component-laptop,
+.findy--export-error .findy--component-laptop {
+  margin: 0 auto;
+}
+.findy--export-modal .findy--export-progress-text {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  margin-bottom: 8px;
+  margin-top: 44px;
+}
+.findy--export-modal .findy--export-advice {
+  font-size: 12px;
+  line-height: 16px;
+  color: #546080;
+  margin-bottom: 25px;
+}
+.findy--export-modal button.findy--button-cancel {
+  width: 70px;
+  min-width: 70px;
+  margin-right: 5px;
+}
+.findy--export-modal button.findy--button-restart {
+  width: auto;
+  min-width: auto;
+  margin-right: 5px;
+}
+.findy--export-modal button.findy--button-start-export,
+.findy--export-modal button.findy--button-save-export {
+  width: 130px;
+  margin-left: 5px;
+}
+.findy--export-modal .findy--export-settings .findy--buttons-pair button {
+  width: 49%;
+}
+.findy--buttons-pair {
+  margin-top: 20px;
+}
+.findy--logo-icon {
+  width: 16px;
+  height: 16px;
+  background-size: 100%;
+}
+.findy--tabs-widget {
+  color: #546080;
+  font-weight: bold;
+  text-align: center;
+  overflow: hidden;
+  height: 40px;
+  border-radius: 0 0 10px 10px;
+}
+.findy--tabs-widget .findy--tab {
+  flex: 1;
+  line-height: 40px;
+  background: #132454;
+  cursor: not-allowed;
+}
+.findy--tabs-widget .findy--tab:not(.findy--tab-disabled) {
+  cursor: pointer;
+}
+.findy--tabs-widget .findy--tab:not(.findy--tab-disabled):hover,
+.findy--tabs-widget .findy--tab:not(.findy--tab-disabled).findy--tab-active {
+  background: #1D3161;
+  color: #fff;
+}
+.findy--tabs-widget .findy--tab:not(.findy--tab-disabled).findy--tab-active {
+  box-shadow: inset 0 3px 0 #e84c4b;
+}
+.findy--credits-widget {
+  padding: 0 15px;
+  margin-bottom: 15px;
+}
+.findy--credits-widget .findy--block {
+  height: 38px;
+  box-sizing: border-box;
+}
+.findy--credits-widget .findy--credits-flex {
+  padding: 5px 15px;
+}
+.findy--credits-widget .findy--credits-type {
+  font-size: 14px;
+}
+.findy--credits-widget .findy--credits-current {
+  font-size: 16px;
+}
+.findy--credits-widget .findy--credits-total {
+  font-size: 14px;
+  color: #A5ADBA;
+}
+.findy--credits-widget .findy--credits-sep {
+  width: 1px;
+  background: #1D3161;
+  align-self: stretch;
+  margin: 0 10px;
+}
+.findy--credits-widget .findy--credit-add-button {
+  border: 1px solid #e84c4b;
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  cursor: pointer;
+}
+.findy--credits-widget .findy--credit-add-button:before,
+.findy--credits-widget .findy--credit-add-button:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 2px;
+  border-radius: 5px;
+  background: #e84c4b;
+}
+.findy--credits-widget .findy--credit-add-button:after {
+  width: 2px;
+  height: 12px;
+}
+.findy--credits-widget .findy--credit-add-button:hover {
+  border-color: #e84c4b;
+  background: #e84c4b;
+}
+.findy--credits-widget .findy--credit-add-button:hover:before,
+.findy--credits-widget .findy--credit-add-button:hover:after {
+  background: #fff;
+}
+.findy--credits-widget .findy--dashboard-button {
+  display: block;
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+.findy--credits-widget .findy--dashboard-button img {
+  position: absolute;
+  width: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.findy--credits-widget .findy--dashboard-button:hover {
+  border: 1px solid #e84c4b;
+}
+.findy--credits-widget .findy--dashboard-button:hover:after {
+  display: block;
+}
+.findy--credits-widget .findy--dashboard-button:after {
+  display: none;
+  position: absolute;
+  content: "Go to Dashboard";
+  white-space: nowrap;
+  color: #fff;
+  background: #04133B;
+  border-radius: 3px;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -10px);
+  font-size: 12px;
+  font-weight: normal;
+  padding: 3px 7px;
+}
+.findy--block {
+  border-radius: 5px;
+  background: #0F215A;
+  color: #fff;
+}
+.findy--dummy-block {
+  border-radius: 3px;
+  background-image: linear-gradient(90deg, #F0F2F4 8%, #e1e5e9 18%, #F0F2F4 33%) !important;
+  background-size: 400% 100%;
+  animation: 6s shine linear infinite;
+}
+.findy--dummy-block:after {
+  content: "‎";
+  color: transparent;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
+.findy--profile-contacts {
+  position: relative;
+}
+.findy--profile-contacts-list-item {
+  margin-bottom: 10px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.findy--profile-contacts-list-item:last-child {
+  margin-bottom: 0;
+}
+.findy--profile-contacts-list-item .findy--copy-icon {
+  opacity: 0.6;
+  cursor: pointer;
+}
+.findy--profile-contacts-list-item:hover .findy--copy-icon {
+  opacity: 1;
+}
+.findy--profile-contacts-open {
+  margin-top: 20px;
+}
+.findy--contact-type {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  margin-right: 7px;
+}
+.findy--contact-type.findy--contact-type-email,
+.findy--contact-type.findy--contact-type-phone {
+  background: #EAE6FF;
+  border-radius: 3px;
+}
+.findy--contact-type.findy--contact-type-email img,
+.findy--contact-type.findy--contact-type-phone img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.findy--contact-text {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #7A869A;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  width: 227px;
+}
+.findy--contact-text.findy--text-blurred {
+  color: transparent;
+  text-shadow: 0 0 4px #7A869A;
+  user-select: none;
+  max-width: 100%;
+  overflow: visible;
+}
+.findy--contact-text-1 {
+  width: 155px;
+  flex: unset;
+}
+.findy--contact-text-2 {
+  width: 90px;
+  flex: unset;
+}
+.findy--dummy-button {
+  border-radius: 3px;
+  background-image: linear-gradient(90deg, #F0F2F4 8%, #e1e5e9 18%, #F0F2F4 33%) !important;
+  background-size: 400% 100%;
+  animation: 6s shine linear infinite;
+  color: transparent !important;
+}
+.findy--dummy-button:after {
+  content: "‎";
+  color: transparent;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
+.findy--profile-photo {
+  border-radius: 3px;
+  background-image: linear-gradient(90deg, #F0F2F4 8%, #e1e5e9 18%, #F0F2F4 33%) !important;
+  background-size: 400% 100%;
+  animation: 6s shine linear infinite;
+  border-radius: 100%;
+  width: 42px;
+  height: 42px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+.findy--profile-photo:after {
+  content: "‎";
+  color: transparent;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
+.findy--profile-photo img {
+  width: 100%;
+  background: var(--entity-ghost-person-accent-4);
+}
+.findy--profile-name {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #132454;
+  margin-bottom: 4px;
+}
+.findy--profile-job {
+  font-size: 12px;
+  line-height: 14px;
+  color: #132454;
+}
+.findy--profile-hr {
+  border-top: 0;
+  border-bottom: 1px solid #EBECF0;
+  height: 0;
+  margin: 12px 0;
+}
+.findy--no-contacts {
+  color: #C1C7D0;
+}
+.findy--loading .findy--profile-name {
+  border-radius: 3px;
+  background-image: linear-gradient(90deg, #F0F2F4 8%, #e1e5e9 18%, #F0F2F4 33%) !important;
+  background-size: 400% 100%;
+  animation: 6s shine linear infinite;
+  min-width: 100px;
+}
+.findy--loading .findy--profile-name:after {
+  content: "‎";
+  color: transparent;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
+.findy--loading .findy--profile-job {
+  border-radius: 3px;
+  background-image: linear-gradient(90deg, #F0F2F4 8%, #e1e5e9 18%, #F0F2F4 33%) !important;
+  background-size: 400% 100%;
+  animation: 6s shine linear infinite;
+  min-width: 120px;
+}
+.findy--loading .findy--profile-job:after {
+  content: "‎";
+  color: transparent;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
+.findy--contacts-fetching {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+}
+.findy--contacts-fetching svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -12px 0 0 -12px;
+}
+.findy--shown {
+  display: block;
+}
+.findy--toaster-widget {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #04133B;
+  z-index: 10;
+}
+.findy--toaster-widget .findy-toast {
+  padding: 25px 20px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(4, 19, 59, 0.3);
+  flex-wrap: nowrap;
+  display: none;
+}
+.findy--toaster-widget .findy-toast.findy--toast-shown {
+  display: flex;
+}
+.findy--toaster-widget .findy--toast-message {
+  padding-left: 10px;
+}
+@keyframes findy--rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes findy--dash {
+  0% {
+    stroke-dasharray: 1, 60;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 45, 60;
+    stroke-dashoffset: -17;
+  }
+  100% {
+    stroke-dasharray: 45, 60;
+    stroke-dashoffset: -60;
+  }
+}
+
+#findyListSelect {
+  width: 244px; 
+  height: 40px; 
+  padding-left: 12px; 
+  padding-right: 12px; 
+  padding-top: 9px; 
+  padding-bottom: 9px; 
+  border-radius: 4px; 
+  border: 1px #E0E0E0 solid; 
+  justify-content: flex-start; 
+  align-items: center; 
+  gap: 12px; 
+  display: inline-flex;
+}
+
+#findyListSelectSN {
+  height: 40px;
+  padding-left: 12px; 
+  padding-right: 12px; 
+  padding-top: 9px; 
+  padding-bottom: 9px; 
+  border-radius: 4px; 
+  border: 1px #E0E0E0 solid; 
+  gap: 12px; 
+}

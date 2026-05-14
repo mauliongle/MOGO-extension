@@ -1,0 +1,72 @@
+<div class="findy--export-modal">
+    <div class="findy--export-settings">
+        <div class="findy--modal-title">How many people would you like to export?</div>
+        <form class="findy--export-form">
+            <div class="findy--input-holder">
+                <input name="findy--pplcount" class="findy--input findy--innput-people-export" type="number" />
+                <div class="findy--max-number findy--export-element">The maximum number is <span class="findy--max-people"></span>.</div>
+                <input id="findyOptionBox" name="" class="" type="checkbox" />
+                <label for="findyOptionBox" id="findyOptionLabel">Do not use Apollo's emails (faster & safer)</label>
+                <div id="findyOptionSubLabel" class="findy--max-number findy--export-element">Will use MOGO email finder instead</div>
+                <label for="findyListSelect" id="findySelectLabel" style="display: block;margin: 5px 0px;font-size: 14px;">Save contacts in MOGO list:</label>
+                <select id="findyListSelect" class="findy--export-element">
+                    <option value="0">All contacts</option>
+                </select>
+
+                <div id="createListBtn" style="cursor: pointer;width: 124px; height: 40px; padding-bottom: 10px; padding-left: 10px; padding-right: 16px; border-radius: 4px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <mask id="mask0_155_189" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+                        <rect width="20" height="20" fill="#D9D9D9"/>
+                        </mask>
+                        <g mask="url(#mask0_155_189)">
+                        <path d="M9.1665 10.8335H4.99984C4.76373 10.8335 4.56581 10.7537 4.40609 10.594C4.24637 10.4342 4.1665 10.2363 4.1665 10.0002C4.1665 9.76409 4.24637 9.56618 4.40609 9.40645C4.56581 9.24673 4.76373 9.16687 4.99984 9.16687H9.1665V5.0002C9.1665 4.76409 9.24637 4.56618 9.40609 4.40645C9.56581 4.24673 9.76373 4.16687 9.99984 4.16687C10.2359 4.16687 10.4339 4.24673 10.5936 4.40645C10.7533 4.56618 10.8332 4.76409 10.8332 5.0002V9.16687H14.9998C15.2359 9.16687 15.4339 9.24673 15.5936 9.40645C15.7533 9.56618 15.8332 9.76409 15.8332 10.0002C15.8332 10.2363 15.7533 10.4342 15.5936 10.594C15.4339 10.7537 15.2359 10.8335 14.9998 10.8335H10.8332V15.0002C10.8332 15.2363 10.7533 15.4342 10.5936 15.594C10.4339 15.7537 10.2359 15.8335 9.99984 15.8335C9.76373 15.8335 9.56581 15.7537 9.40609 15.594C9.24637 15.4342 9.1665 15.2363 9.1665 15.0002V10.8335Z" fill="#E84C4B"/>
+                        </g>
+                    </svg>
+                    <div style="flex: 1 1 0; text-align: center; color: #E84C4B; font-size: 14px; font-family: Inter; font-weight: 600; line-height: 20px; word-wrap: break-word">Create list</div>
+                </div>
+
+                <label for="findyListSelectSN" id="findySelectLabelSN" style="display: none;margin: 5px 0px;font-size: 14px;">Save contacts in Sales Navigator list:</label>
+                <select id="findyListSelectSN" style="display: none;" class="findy--export-element">
+                    <option value="0">All contacts</option>
+                </select>
+                <div id="findyCreditsUsed" class="findy--modal-credits-preview" style="padding-top: 16px; padding-bottom: 10px;"></div>
+            </div>
+            <div class="findy--flex findy--flex-sb findy--buttons-pair">
+                <button class="findy--button findy--button-light findy--button-cancel">Cancel</button>
+                <button class="findy--button findy--button-start-export">Export CSV</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="findy--export-inprogress">
+        <div class="findy--laptop-loading-container"></div>
+        <div class="findy--export-progress-text"><span class="findy--export-progress-current">0</span> of <span class="findy--export-progress-total">0</span> people exported</div>
+        <div class="findy--export-advice">You can do something else while its working ! Just don't close the tab. <br> All leads with a valid email are saved locally in your contacts.</div>
+        <div class="findy--flex findy--flex-c findy--buttons-pair">
+            <!--<button class="findy--button findy--button-light findy--button-cancel">Cancel</button>-->
+            <button class="findy--button findy--button-save-export">Stop and save</button>
+        </div>
+    </div>
+
+    <div class="findy--export-success">
+        <div class="findy--laptop-success-container"></div>
+        <div class="findy--export-progress-text">Done!</div>
+        <div class="findy--export-advice">Your CSV download started automatically.</div>
+        <div class="findy--export-advice findy--export-warning" style="display: none;">⚠️ We detected duplicates during the scraping, you may receive less leads than initially expected</div>
+
+        <div class="findy--flex findy--flex-c findy--buttons-pair">
+            <button class="findy--button findy--button-cancel">Close</button>
+            <!--<button class="findy--button findy--button-save-export">Save CSV</button>-->
+        </div>
+    </div>
+
+    <div class="findy--export-error">
+        <div class="findy--laptop-error-container"></div>
+        <div class="findy--export-progress-text">Process was interrupted.</div>
+        <div class="findy--export-advice">You can continue or export people we already found.</div>
+        <div class="findy--flex findy--flex-c findy--buttons-pair">
+            <button class="findy--button findy--button-light findy--button-continue">Continue<span class="findy--continue_in"></span></button>
+            <button class="findy--button findy--button-save-export">Export collected</button>
+        </div>
+    </div>
+</div>
