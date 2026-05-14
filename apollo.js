@@ -1,8 +1,7 @@
-/**
- * MOGO - Apollo.io Content Script
- * Rewritten: No Findymail API calls, no login required.
- * Uses local MOGO API (localhost:7823) for email finding & verification.
- */
+// Page sizes per platform
+const APOLLO_PAGE_SIZE   = 30;  // Apollo shows 30 results per page
+const SALESNAV_PAGE_SIZE = 25;  // Sales Navigator shows 25 results per page
+
 
 const MOGO_API = 'http://localhost:7823';
 
@@ -181,9 +180,9 @@ function getPaginationEl() {
 // ─── Reset export state ───────────────────────────────────────────────────────
 function resetExport() {
   const inp = q('.findy--innput-people-export');
-  if (inp) { inp.max = 0; inp.value = 30; }
+  if (inp) { inp.max = 0; inp.value = ''; inp.placeholder = 'e.g. 150'; }
   chrome.storage.sync.set({
-    export_status: 'waiting', peopleToExport: 30, exportOption: true,
+    export_status: 'waiting', peopleToExport: 0, exportOption: true,
     apollo_duplicates: false, apollo_tab: 'not_net_new', autoSelectContactList: null
   });
   const maxEl = q('.findy--max-people');
@@ -229,33 +228,18 @@ function openExportModal() {
         };
       });
 
-      // Wire up batch preset buttons
-      document.querySelectorAll('.mogo-batch-btn').forEach(btn => {
-        btn.onclick = () => {
-          document.querySelectorAll('.mogo-batch-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const inp = q('.findy--innput-people-export');
-          const maxVal = parseInt(q('.findy--max-people')?.textContent || '9999');
-          const val = btn.dataset.val === 'all' ? maxVal : parseInt(btn.dataset.val);
-          inp.value = val;
-          chrome.storage.sync.set({ peopleToExport: val });
-          updateCreditsLabel();
-        };
-      });
-      // Default active = 30
-      const def30 = document.querySelector('.mogo-batch-btn[data-val="30"]');
-      if (def30) def30.classList.add('active');
-
-      // People count input (custom)
+      // Simple free-form input — user types exactly how many they want
       const inp = q('.findy--innput-people-export');
-      inp.value = 30;
       inp.onkeyup = inp.onchange = function() {
-        document.querySelectorAll('.mogo-batch-btn').forEach(b => b.classList.remove('active'));
-        chrome.storage.sync.set({ peopleToExport: this.value });
+        chrome.storage.sync.set({ peopleToExport: parseInt(this.value) || 0 });
         updateCreditsLabel();
       };
 
-      // Credits label — no auth needed
+      // Show page size info
+      const pageNote = q('#mogo-page-size-note');
+      if (pageNote) pageNote.textContent = `${APOLLO_PAGE_SIZE} per page (Apollo)`;
+
+      // Credits label
       const credEl = q('#findyCreditsUsed');
       if (credEl) credEl.innerHTML = '✅ No login required — export is free';
 

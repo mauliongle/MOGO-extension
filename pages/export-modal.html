@@ -1,42 +1,47 @@
 <div class="findy--export-modal">
     <div class="findy--export-settings">
-        <div class="findy--modal-title">Export contacts from Apollo</div>
+        <div class="findy--modal-title">Export contacts</div>
         <form class="findy--export-form">
             <div class="findy--input-holder">
 
-                <!-- Batch size quick-select buttons -->
-                <div style="margin-bottom:10px;">
-                    <div style="font-size:13px;font-weight:600;color:#444;margin-bottom:6px;">How many contacts to export?</div>
-                    <div id="mogo-batch-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-                        <button type="button" class="mogo-batch-btn" data-val="30">30</button>
-                        <button type="button" class="mogo-batch-btn" data-val="50">50</button>
-                        <button type="button" class="mogo-batch-btn" data-val="100">100</button>
-                        <button type="button" class="mogo-batch-btn" data-val="200">200</button>
-                        <button type="button" class="mogo-batch-btn" data-val="500">500</button>
-                        <button type="button" class="mogo-batch-btn mogo-batch-btn-all" data-val="all">All</button>
+                <!-- Free-form export count -->
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:13px;font-weight:600;color:#444;display:block;margin-bottom:6px;">
+                        How many people do you want to export?
+                    </label>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <input
+                            name="findy--pplcount"
+                            class="findy--input findy--innput-people-export"
+                            type="number"
+                            min="1"
+                            placeholder="e.g. 150"
+                            style="width:110px;font-size:16px;font-weight:600;"
+                        />
+                        <span style="font-size:12px;color:#aaa;">
+                            of <span class="findy--max-people" style="font-weight:600;color:#555;"></span> available
+                        </span>
                     </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="font-size:12px;color:#888;">Custom:</span>
-                        <input name="findy--pplcount" class="findy--input findy--innput-people-export" type="number" min="1" style="width:90px;" />
-                        <span style="font-size:12px;color:#aaa;">max <span class="findy--max-people"></span></span>
+                    <div style="font-size:11px;color:#888;margin-top:5px;">
+                        Pages processed: <strong id="mogo-page-size-note"></strong>
                     </div>
                 </div>
 
-                <!-- Hidden original option box (kept for JS compatibility) -->
+                <!-- Hidden fields for JS compatibility -->
                 <input id="findyOptionBox" name="" class="" type="checkbox" style="display:none;" />
-                <label for="findyOptionBox" id="findyOptionLabel" style="display:none;">Do not use Apollo's emails</label>
-                <div id="findyOptionSubLabel" class="findy--max-number findy--export-element" style="display:none;"></div>
+                <label for="findyOptionBox" id="findyOptionLabel" style="display:none;"></label>
+                <div id="findyOptionSubLabel" style="display:none;"></div>
 
                 <!-- Email status legend -->
-                <div style="margin:10px 0 6px 0;font-size:12px;font-weight:600;color:#444;">CSV will include email_status column:</div>
-                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
-                    <span style="background:#d4edda;color:#155724;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;">✅ Verified</span>
-                    <span style="background:#fff3cd;color:#856404;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;">⚠️ Catch-All</span>
-                    <span style="background:#e2e3e5;color:#383d41;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;">❓ Unknown</span>
-                    <span style="background:#f8d7da;color:#721c24;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;">❌ Invalid</span>
+                <div style="margin:4px 0 6px 0;font-size:12px;font-weight:600;color:#444;">CSV includes an <code>email_status</code> column:</div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+                    <span style="background:#d4edda;color:#155724;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">✅ Verified</span>
+                    <span style="background:#fff3cd;color:#856404;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">⚠️ Catch-All</span>
+                    <span style="background:#e2e3e5;color:#383d41;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">❓ Unknown</span>
+                    <span style="background:#f8d7da;color:#721c24;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">❌ Invalid</span>
                 </div>
 
-                <!-- Contact list selector -->
+                <!-- List selector -->
                 <label for="findyListSelect" id="findySelectLabel" style="display:block;margin:5px 0;font-size:13px;">Save to list:</label>
                 <select id="findyListSelect" class="findy--export-element">
                     <option value="0">All contacts</option>
@@ -45,41 +50,22 @@
                 <div id="createListBtn" style="cursor:pointer;width:124px;height:40px;padding-bottom:10px;padding-left:10px;padding-right:16px;border-radius:4px;overflow:hidden;justify-content:flex-start;align-items:center;gap:8px;display:inline-flex">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <mask id="mask0_155_189" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
-                        <rect width="20" height="20" fill="#D9D9D9"/>
-                        </mask>
+                        <rect width="20" height="20" fill="#D9D9D9"/></mask>
                         <g mask="url(#mask0_155_189)">
                         <path d="M9.1665 10.8335H4.99984C4.76373 10.8335 4.56581 10.7537 4.40609 10.594C4.24637 10.4342 4.1665 10.2363 4.1665 10.0002C4.1665 9.76409 4.24637 9.56618 4.40609 9.40645C4.56581 9.24673 4.76373 9.16687 4.99984 9.16687H9.1665V5.0002C9.1665 4.76409 9.24637 4.56618 9.40609 4.40645C9.56581 4.24673 9.76373 4.16687 9.99984 4.16687C10.2359 4.16687 10.4339 4.24673 10.5936 4.40645C10.7533 4.56618 10.8332 4.76409 10.8332 5.0002V9.16687H14.9998C15.2359 9.16687 15.4339 9.24673 15.5936 9.40645C15.7533 9.56618 15.8332 9.76409 15.8332 10.0002C15.8332 10.2363 15.7533 10.4342 15.5936 10.594C15.4339 10.7537 15.2359 10.8335 14.9998 10.8335H10.8332V15.0002C10.8332 15.2363 10.7533 15.4342 10.5936 15.594C10.4339 15.7537 10.2359 15.8335 9.99984 15.8335C9.76373 15.8335 9.56581 15.7537 9.40609 15.594C9.24637 15.4342 9.1665 15.2363 9.1665 15.0002V10.8335Z" fill="#E84C4B"/>
                         </g>
                     </svg>
-                    <div style="flex:1 1 0;text-align:center;color:#E84C4B;font-size:14px;font-family:Inter;font-weight:600;line-height:20px;word-wrap:break-word">Create list</div>
+                    <div style="flex:1 1 0;text-align:center;color:#E84C4B;font-size:14px;font-family:Inter;font-weight:600;line-height:20px;">Create list</div>
                 </div>
 
-                <div id="findyCreditsUsed" class="findy--modal-credits-preview" style="padding-top:12px;padding-bottom:10px;font-size:12px;color:#28a745;"></div>
+                <div id="findyCreditsUsed" class="findy--modal-credits-preview" style="padding-top:12px;padding-bottom:6px;font-size:12px;color:#28a745;"></div>
             </div>
+
             <div class="findy--flex findy--flex-sb findy--buttons-pair">
                 <button class="findy--button findy--button-light findy--button-cancel">Cancel</button>
                 <button class="findy--button findy--button-start-export">🚀 Export CSV</button>
             </div>
         </form>
-
-        <!-- Batch button styles -->
-        <style>
-        .mogo-batch-btn {
-            background: #f0f0f0;
-            border: 1.5px solid #ddd;
-            border-radius: 6px;
-            padding: 4px 12px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .mogo-batch-btn:hover { background: #E84C4B; color: #fff; border-color: #E84C4B; }
-        .mogo-batch-btn.active { background: #E84C4B; color: #fff; border-color: #E84C4B; }
-        .mogo-batch-btn-all { background: #fff3cd; border-color: #ffc107; color: #856404; }
-        .mogo-batch-btn-all:hover, .mogo-batch-btn-all.active { background: #ffc107; color: #333; border-color: #ffc107; }
-        </style>
     </div>
 
     <div class="findy--export-inprogress">
@@ -88,10 +74,10 @@
             <span class="findy--export-progress-current">0</span> of <span class="findy--export-progress-total">0</span> exported
         </div>
         <div id="mogo-status-counts" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0;">
-            <span style="font-size:11px;background:#d4edda;color:#155724;border-radius:4px;padding:1px 6px;">✅ <span id="cnt-verified">0</span></span>
-            <span style="font-size:11px;background:#fff3cd;color:#856404;border-radius:4px;padding:1px 6px;">⚠️ <span id="cnt-catchall">0</span></span>
-            <span style="font-size:11px;background:#e2e3e5;color:#383d41;border-radius:4px;padding:1px 6px;">❓ <span id="cnt-unknown">0</span></span>
-            <span style="font-size:11px;background:#f8d7da;color:#721c24;border-radius:4px;padding:1px 6px;">❌ <span id="cnt-invalid">0</span></span>
+            <span style="font-size:11px;background:#d4edda;color:#155724;border-radius:4px;padding:1px 7px;">✅ <span id="cnt-verified">0</span></span>
+            <span style="font-size:11px;background:#fff3cd;color:#856404;border-radius:4px;padding:1px 7px;">⚠️ <span id="cnt-catchall">0</span></span>
+            <span style="font-size:11px;background:#e2e3e5;color:#383d41;border-radius:4px;padding:1px 7px;">❓ <span id="cnt-unknown">0</span></span>
+            <span style="font-size:11px;background:#f8d7da;color:#721c24;border-radius:4px;padding:1px 7px;">❌ <span id="cnt-invalid">0</span></span>
         </div>
         <div class="findy--export-advice">Don't close this tab. Emails are being verified in real-time.</div>
         <div class="findy--flex findy--flex-c findy--buttons-pair">
@@ -104,7 +90,7 @@
         <div class="findy--export-progress-text">Done! CSV downloaded ✅</div>
         <div id="mogo-final-stats" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0;"></div>
         <div class="findy--export-advice">Your CSV includes an <strong>email_status</strong> column for every contact.</div>
-        <div class="findy--export-advice findy--export-warning" style="display:none;">⚠️ Duplicates were detected — you may receive fewer leads than expected</div>
+        <div class="findy--export-advice findy--export-warning" style="display:none;">⚠️ Duplicates detected — you may receive fewer leads than expected</div>
         <div class="findy--flex findy--flex-c findy--buttons-pair">
             <button class="findy--button findy--button-cancel">Close</button>
         </div>
