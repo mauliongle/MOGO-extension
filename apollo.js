@@ -9,12 +9,13 @@ const MOGO_API = 'http://localhost:7823';
 const state = {
   storage: { currentPage: null, maxPages: null },
   csvTitles: [
-    'linkedin_url','full_name','first_name','last_name','email','job_title',
+    'linkedin_url','full_name','first_name','last_name','email','email_status','job_title',
     'company','company_website','city','state','country','industry','keywords',
     'employees','company_city','company_state','company_country',
     'company_linkedin_url','company_twitter_url','company_facebook_url',
     'twitter_url','facebook_url'
   ],
+  statusCounts: { verified: 0, catchAll: 0, unknown: 0, invalid: 0 },
   exportButtonChecker: null,
   maxesSetFromPage: null,
   collectPeopleFailTimer: null,
@@ -54,6 +55,25 @@ function generateEmailPatterns(firstName, lastName, domain) {
   return patterns;
 }
 
+// ─── Map verify reason → CSV status label ───────────────────────────────────
+function reasonToStatus(reason, valid) {
+  if (!reason) return 'Unknown';
+  if (reason === 'smtp_verified') return 'Verified';
+  if (reason.includes('catch_all') || reason === 'free_provider') return 'Catch-All';
+  if (!valid || reason === 'smtp_rejected' || reason === 'domain_not_found' || reason === 'no_mx_records') return 'Invalid';
+  return 'Unknown';
+}
+
+// Update live status counters in the modal UI
+function updateStatusCounts() {
+  const { verified, catchAll, unknown, invalid } = state.statusCounts;
+  const el = id => document.getElementById(id);
+  if (el('cnt-verified'))  el('cnt-verified').textContent  = verified;
+  if (el('cnt-catchall'))  el('cnt-catchall').textContent  = catchAll;
+  if (el('cnt-unknown'))   el('cnt-unknown').textContent   = unknown;
+  if (el('cnt-invalid'))   el('cnt-invalid').textContent   = invalid;
+}
+
 // ─── API: Find Email ──────────────────────────────────────────────────────────
 async function apiFindEmail(firstName, lastName, domain) {
   try {
@@ -73,7 +93,7 @@ async function apiFindEmail(firstName, lastName, domain) {
   }
 }
 
-// ─── API: Verify Email ────────────────────────────────────────────────────────
+// ─── API: Verify Email (returns full result) ─────────────────────────────────
 async function apiVerifyEmail(email) {
   try {
     const res = await fetch(`${MOGO_API}/verify`, {
@@ -83,10 +103,9 @@ async function apiVerifyEmail(email) {
       signal: AbortSignal.timeout(15000)
     });
     if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    return data.valid === true;
+    return await res.json(); // { valid, reason, catchAll, confidence }
   } catch {
-    return true; // Assume valid if verifier offline
+    return { valid: true, reason: 'unknown', catchAll: false };
   }
 }
 
@@ -162,17 +181,18 @@ function getPaginationEl() {
 // ─── Reset export state ───────────────────────────────────────────────────────
 function resetExport() {
   const inp = q('.findy--innput-people-export');
-  if (inp) { inp.max = 0; inp.value = 0; }
+  if (inp) { inp.max = 0; inp.value = 30; }
   chrome.storage.sync.set({
-    export_status: 'waiting', peopleToExport: 0, exportOption: true,
+    export_status: 'waiting', peopleToExport: 30, exportOption: true,
     apollo_duplicates: false, apollo_tab: 'not_net_new', autoSelectContactList: null
   });
   const maxEl = q('.findy--max-people');
   if (maxEl) maxEl.innerText = 0;
   const credEl = q('#findyCreditsUsed');
-  if (credEl) credEl.innerHTML = '';
+  if (credEl) credEl.innerHTML = '✅ No login required — export is free';
   state.peopleList = [state.csvTitles];
   state.emailList = [];
+  state.statusCounts = { verified: 0, catchAll: 0, unknown: 0, invalid: 0 };
 }
 
 // ─── Update credits label ─────────────────────────────────────────────────────
@@ -209,15 +229,31 @@ function openExportModal() {
         };
       });
 
-      // People count input
+      // Wire up batch preset buttons
+      document.querySelectorAll('.mogo-batch-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.mogo-batch-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const inp = q('.findy--innput-people-export');
+          const maxVal = parseInt(q('.findy--max-people')?.textContent || '9999');
+          const val = btn.dataset.val === 'all' ? maxVal : parseInt(btn.dataset.val);
+          inp.value = val;
+          chrome.storage.sync.set({ peopleToExport: val });
+          updateCreditsLabel();
+        };
+      });
+      // Default active = 30
+      const def30 = document.querySelector('.mogo-batch-btn[data-val="30"]');
+      if (def30) def30.classList.add('active');
+
+      // People count input (custom)
       const inp = q('.findy--innput-people-export');
+      inp.value = 30;
       inp.onkeyup = inp.onchange = function() {
+        document.querySelectorAll('.mogo-batch-btn').forEach(b => b.classList.remove('active'));
         chrome.storage.sync.set({ peopleToExport: this.value });
         updateCreditsLabel();
       };
-      chrome.storage.sync.get('peopleToExport', ({ peopleToExport: v }) => {
-        if (!isNaN(v) && v > 0) { inp.value = v; updateCreditsLabel(); } else inp.value = 0;
-      });
 
       // Credits label — no auth needed
       const credEl = q('#findyCreditsUsed');
@@ -476,20 +512,34 @@ function startCollection(retryCount = 0, retryPage = 0) {
         if (knownEmail && knownEmail !== 'email_not_unlocked@domain.com') {
           email = knownEmail;
         } else {
-          // Find email via local API
           email = await apiFindEmail(firstName, lastName, domain) || '';
         }
 
         // Deduplicate
         if (email && state.emailList.includes(email)) {
-          email = ''; // already have it
+          email = '';
         } else if (email) {
           state.emailList.push(email);
         }
 
+        // Verify email and get status
+        let emailStatus = 'Unknown';
+        if (email) {
+          const vResult = await apiVerifyEmail(email);
+          emailStatus = reasonToStatus(vResult.reason, vResult.valid);
+          // Update live counters
+          if (emailStatus === 'Verified')  state.statusCounts.verified++;
+          else if (emailStatus === 'Catch-All') state.statusCounts.catchAll++;
+          else if (emailStatus === 'Invalid')   state.statusCounts.invalid++;
+          else                                   state.statusCounts.unknown++;
+        } else {
+          state.statusCounts.unknown++;
+        }
+        updateStatusCounts();
+
         state.peopleList.push([
           csvSafe(linkedinUrl), csvSafe(fullName), csvSafe(firstName), csvSafe(lastName),
-          csvSafe(email), csvSafe(title), csvSafe(company), csvSafe(domain),
+          csvSafe(email), csvSafe(emailStatus), csvSafe(title), csvSafe(company), csvSafe(domain),
           csvSafe(city), csvSafe(region), csvSafe(country),
           csvSafe(industry), csvSafe(keywords), csvSafe(employees),
           csvSafe(companyCity), csvSafe(companyState), csvSafe(companyCountry),
@@ -542,6 +592,18 @@ function finishExport() {
     }
 
     setExportStatus('success');
+
+    // Show final stats in success panel
+    const statsEl = document.getElementById('mogo-final-stats');
+    if (statsEl) {
+      const { verified, catchAll, unknown, invalid } = state.statusCounts;
+      statsEl.innerHTML = [
+        `<span style="background:#d4edda;color:#155724;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;">✅ Verified: ${verified}</span>`,
+        `<span style="background:#fff3cd;color:#856404;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;">⚠️ Catch-All: ${catchAll}</span>`,
+        `<span style="background:#e2e3e5;color:#383d41;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;">❓ Unknown: ${unknown}</span>`,
+        `<span style="background:#f8d7da;color:#721c24;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;">❌ Invalid: ${invalid}</span>`,
+      ].join('');
+    }
 
     const csv = state.peopleList.map(row => row.join(',').replace(/#/g, '').trim()).join('\r\n');
     const uri = encodeURI('data:text/csv;charset=utf-8,' + csv);
