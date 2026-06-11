@@ -191,7 +191,7 @@ function getRemainingProfile(base) {
 							picture: base.picture, 
 							domain: domain,
 							company: companyName, 
-							linkedin_url: currentPage, 
+							linkedin_url: window.location.href, 
 							job_title: title
 						}
 					}
@@ -210,7 +210,7 @@ function getRemainingProfile(base) {
 									let cleanedUrl =  extractRootDomain(websiteRegex.groups.websiteUrl).toLowerCase();
 									domain = cleanedUrl;
 								}
-								let isBlacklisted = typeof company_domain === 'string' && snDomainBlacklist.some(str => domain.includes(str));
+								let isBlacklisted = typeof domain === 'string' && snDomainBlacklist.some(str => domain.includes(str));
 								if (isBlacklisted) {
 									domain = '';
 								}
@@ -222,7 +222,7 @@ function getRemainingProfile(base) {
 											picture: base.picture, 
 											domain: domain,
 											company: companyName, 
-											linkedin_url: currentPage, 
+											linkedin_url: window.location.href, 
 											job_title: title
 										}
 									})
@@ -249,7 +249,7 @@ function getRemainingProfile(base) {
 									picture: base.picture, 
 									domain: domain,
 									company: companyName, 
-									linkedin_url: currentPage, 
+									linkedin_url: window.location.href, 
 									job_title: title
 								}
 							})
@@ -277,7 +277,7 @@ function getRemainingProfile(base) {
 							picture: base.picture, 
 							domain: companyName,
 							company: companyName, 
-							linkedin_url: currentPage, 
+							linkedin_url: window.location.href, 
 							job_title: title
 						}
 					})
@@ -291,7 +291,7 @@ function getRemainingProfile(base) {
 					name : base.name,
 					picture: base.picture, 
 					domain:  null, 
-					linkedin_url: currentPage, 
+					linkedin_url: window.location.href, 
 					company: null, 
 					job_title: title
 				}
