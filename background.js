@@ -140,7 +140,7 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
 let lastUrl = null;
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
-  chrome.tabs.query({ active: true, currentWindow: true }).then(function(tabs) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     const tab = tabs[0];
     if (!tab) return;
 
@@ -153,7 +153,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
       }
 
       if (changeInfo.status === 'complete' && 
-          (/^https:\/\/www.linkedin.com\/in\//.test(tab.url) || /^https:\/\/www.linkedin.com\/sales\/lead/.test(tab.url))) {
+          (/^https:\/\/www.linkedin.com\/in\//.test(tab.url) || /^https:\/\/www.linkedin.com\/sales\/lead/.test(tab.url) || /^https:\/\/www.linkedin.com\/sales\/people/.test(tab.url))) {
         chrome.storage.sync.get(['linkedin_profiles', 'enrichment_statuses'], function(data) {
           const profiles = data.linkedin_profiles || {};
           const statuses = data.enrichment_statuses || {};
@@ -216,7 +216,7 @@ async function callFindAndVerify(name, domain) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, domain }),
-      signal: AbortSignal.timeout(18000)
+      signal: (function() { var c = new AbortController(); setTimeout(function() { c.abort(); }, 18000); return c.signal; })()
     });
     if (!res.ok) throw new Error('API error');
     return await res.json();

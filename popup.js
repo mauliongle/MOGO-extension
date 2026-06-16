@@ -5,10 +5,15 @@
 
 const linkedinProfileRegex = new RegExp(/^https:\/\/www.linkedin.com\/in\//);
 const salesNavProfileRegex = new RegExp(/^https:\/\/www.linkedin.com\/sales\/lead\//);
+const salesNavPeopleRegex = new RegExp(/^https:\/\/www.linkedin.com\/sales\/people\//);
 const apolloRegex = new RegExp(/^https:\/\/app.apollo.io\/#\/people/);
 const salesNavSearchRegex = new RegExp(/^https:\/\/www.linkedin.com\/sales\/search\//);
 const linkedinSearchRegex = new RegExp(/^https:\/\/www.linkedin.com\/search\/results\/people/);
 const postsRegex = new RegExp(/^https:\/\/www.linkedin.com\/posts\//);
+
+function isSalesNavProfile(url) {
+  return salesNavProfileRegex.test(url) || salesNavPeopleRegex.test(url);
+}
 
 // ========== Email Generator (inline for popup context) ==========
 const EmailGen = {
@@ -154,7 +159,7 @@ function showEnrichmentResult(result) {
 function showProfileView() {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     const tab = tabs[0];
-    if (!tab || (!linkedinProfileRegex.test(tab.url) && !salesNavProfileRegex.test(tab.url))) {
+    if (!tab || (!linkedinProfileRegex.test(tab.url) && !isSalesNavProfile(tab.url))) {
       showReady();
       return;
     }
@@ -301,7 +306,7 @@ function showReadyOrProfile() {
 
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       const tab = tabs[0];
-      if (tab && (linkedinProfileRegex.test(tab.url) || salesNavProfileRegex.test(tab.url))) {
+      if (tab && (linkedinProfileRegex.test(tab.url) || isSalesNavProfile(tab.url))) {
         showProfileView();
       } else {
         showReady();
@@ -316,11 +321,11 @@ function showReadyOrProfile() {
   chrome.storage.sync.set({ autoSelectContactList: null });
   
   chrome.storage.sync.get(['enrichment_statuses'], function(data) {
-    chrome.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       const tab = tabs[0];
       if (!tab) { showReady(); return; }
 
-      if (data.enrichment_statuses && (linkedinProfileRegex.test(tab.url) || salesNavProfileRegex.test(tab.url))) {
+      if (data.enrichment_statuses && (linkedinProfileRegex.test(tab.url) || isSalesNavProfile(tab.url))) {
         const status = data.enrichment_statuses[tab.id];
         if (status === 'loading') {
           loadComponent('/components/profile-enrichment-loading.html', document.body, true);

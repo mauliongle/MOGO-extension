@@ -40,8 +40,9 @@
       "all_frames": true
     },
     {
-      "matches": ["https://*.linkedin.com/sales/lead/*"],
+      "matches": ["https://*.linkedin.com/sales/lead/*", "https://*.linkedin.com/sales/people/*"],
       "js": ["salesnav_profile.js"],
+      "css": ["widget.css"],
       "all_frames": true
     },
     {
