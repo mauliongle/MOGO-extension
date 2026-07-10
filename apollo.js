@@ -622,7 +622,7 @@ function renderExportButton() {
   if (q('.mogo--search-export-button')) return; // already exists
 
   // Only show on people search pages
-  if (window.location.hash.indexOf('/people') === -1) return;
+  if (window.location.href.indexOf('/people') === -1) return;
 
   const btn = document.createElement('a');
   btn.textContent = '💌 Export to CSV';
@@ -662,7 +662,12 @@ function renderExportButton() {
     return;
   }
   renderExportButton._retries = 0;
-  container.append(btn);
+      if (container === document.body) {
+      btn.style.position = 'fixed';
+      btn.style.top = '100px';
+      btn.style.right = '20px';
+    }
+    container.append(btn);
 }
 
 // ─── Remove export button ─────────────────────────────────────────────────────

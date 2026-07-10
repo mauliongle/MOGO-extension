@@ -301,9 +301,17 @@ function setupExportButton() {
       if (isSN) {
         const target = querySelector('.search-results__global-actions') || 
                        querySelector('#search-results-container header') || 
-                       querySelector('.bulk-actions');
+                       querySelector('.bulk-actions') ||
+                       querySelector('.artdeco-card') ||
+                       document.body;
         if (target) {
-          target.appendChild(exportElement);
+          if (target === document.body) {
+             exportElement.style.position = 'fixed';
+             exportElement.style.top = '100px';
+             exportElement.style.right = '20px';
+             exportElement.style.zIndex = '999999';
+          }
+          target.insertBefore(exportElement, target.firstChild);
           return true;
         }
       } else {
