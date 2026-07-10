@@ -675,8 +675,8 @@ function removeExportButton() {
 
 // ─── Handle Apollo SPA navigation ────────────────────────────────────────────
 function handleRouteChange() {
-  var hash = window.location.hash || '';
-  if (hash.indexOf('/people') > -1) {
+  var url = window.location.href || '';
+  if (url.indexOf('/people') > -1) {
     // On people search — show export button after DOM settles
     setTimeout(renderExportButton, 2000);
   } else {
@@ -732,10 +732,10 @@ chrome.storage.onChanged.addListener(function(changes) {
   window.addEventListener('popstate', handleRouteChange);
 
   // Also watch for DOM-based navigation (React router can push without hashchange)
-  var lastHash = window.location.hash;
+  var lastUrl = window.location.href;
   var routeObserver = new MutationObserver(function() {
-    if (window.location.hash !== lastHash) {
-      lastHash = window.location.hash;
+    if (window.location.href !== lastUrl) {
+      lastUrl = window.location.href;
       handleRouteChange();
     }
   });
@@ -743,4 +743,4 @@ chrome.storage.onChanged.addListener(function(changes) {
 
   // Initial render after Apollo loads
   handleRouteChange();
-})();
+})();

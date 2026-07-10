@@ -282,6 +282,8 @@ function setupExportButton() {
   try { mogoState.exportButtonChecker.disconnect(); } catch(e) {}
 
   chrome.storage.sync.get(['exportButton', 'isSN', 'current_tab_url'], function({ exportButton, isSN, current_tab_url }) {
+    if (!exportButton) return;
+    
     let container = querySelector('.search-results-container');
     const snContainer = querySelector('#search-results-container');
 
@@ -289,19 +291,43 @@ function setupExportButton() {
       container = querySelector('.comments-comment-box') || querySelector('.comments-comment-box--cr');
     }
 
+    const render = () => {
+      if (document.querySelector('.findy--search-export-holder')) return true; // Already placed
+
+      const holder = document.createElement('div');
+      holder.innerHTML = exportButton;
+      const exportElement = holder.firstElementChild;
+
+      if (isSN) {
+        const target = querySelector('.search-results__global-actions') || 
+                       querySelector('#search-results-container header') || 
+                       querySelector('.bulk-actions');
+        if (target) {
+          target.appendChild(exportElement);
+          return true;
+        }
+      } else {
+        const target = container ? container.querySelector('h2') : null;
+        if (target && target.parentElement) {
+          target.parentElement.insertBefore(exportElement, target);
+          return true;
+        }
+      }
+      return false;
+    };
+
     if (isSN) {
-      if (snContainer) { /* button already placed */ }
-      else {
-        const bulk = querySelector('.bulk-actions');
-        if (!bulk) setTimeout(() => setupExportButton(), 1000);
+      if (!render()) {
+        setTimeout(() => setupExportButton(), 1000);
       }
     } else if (container) {
+      render();
       mogoState.exportButtonChecker = new MutationObserver(mutations => {
         let timeout;
         mutations.forEach(mutation => {
           if (mutation.target.tagName === 'H2' || !document.querySelector('.findy--search-export-holder')) {
             clearTimeout(timeout);
-            timeout = setTimeout(() => { /* re-add button if needed */ }, 100);
+            timeout = setTimeout(() => { render(); }, 100);
           }
         });
       });
