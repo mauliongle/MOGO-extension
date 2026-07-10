@@ -144,6 +144,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
     const tab = tabs[0];
     if (!tab) return;
 
+    // Track Apollo.io URL changes
+    if (tab && tabId === tab.id && /^https:\/\/app\.apollo\.io/.test(tab.url)) {
+      if (changeInfo.status === 'complete' || changeInfo.url) {
+        chrome.storage.sync.set({ current_tab_url: tab.url });
+      }
+    }
+
     if (tab && tabId === tab.id && LINKEDIN_URL_REGEX.test(tab.url)) {
       if (changeInfo.status === 'loading') {
         chrome.storage.sync.set({ current_tab_url: tab.url });

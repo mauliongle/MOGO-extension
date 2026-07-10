@@ -80,7 +80,7 @@ async function apiFindEmail(firstName, lastName, domain) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ firstName, lastName, domain }),
-      signal: AbortSignal.timeout(8000)
+      signal: (function() { var c = new AbortController(); setTimeout(function() { c.abort(); }, 8000); return c.signal; })()
     });
     if (!res.ok) throw new Error('API error');
     const data = await res.json();
@@ -99,7 +99,7 @@ async function apiVerifyEmail(email) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
-      signal: AbortSignal.timeout(15000)
+      signal: (function() { var c = new AbortController(); setTimeout(function() { c.abort(); }, 15000); return c.signal; })()
     });
     if (!res.ok) throw new Error('API error');
     return await res.json(); // { valid, reason, catchAll, confidence }
@@ -617,9 +617,12 @@ function setExportStatus(status) {
 
 // ─── Render Export Button on Apollo ──────────────────────────────────────────
 function renderExportButton() {
-  try { state.exportButtonChecker?.disconnect(); } catch {}
+  try { if (state.exportButtonChecker) state.exportButtonChecker.disconnect(); } catch {}
 
   if (q('.mogo--search-export-button')) return; // already exists
+
+  // Only show on people search pages
+  if (window.location.hash.indexOf('/people') === -1) return;
 
   const btn = document.createElement('a');
   btn.textContent = '💌 Export to CSV';
@@ -628,52 +631,77 @@ function renderExportButton() {
     'color:white','font-weight:600','cursor:pointer',
     'padding:10px 12px','background:#E84C4B','border-radius:8px',
     'justify-content:flex-start','align-items:center','gap:8px',
-    'display:inline-flex','margin-bottom:5px'
+    'display:inline-flex','margin-bottom:5px','z-index:9999'
   ].join(';');
   btn.onclick = openExportModal;
 
-  // Try multiple selectors for the toolbar
-  const targets = [
+  // Try multiple selectors for the toolbar — Apollo changes their DOM
+  var targets = [
     'div.pipeline-tabs',
     '.finder-explorer-sidebar-shown div.zp-tabs',
-    '.zp_hdLme > div'
+    '.zp_hdLme > div',
+    '.finder-results-list-panel-content > div:first-child',
+    'div[class*="pipeline-tabs"]',
+    'div.zp-tabs',
+    'div[data-cy="people-table-toolbar"]',
+    'div[class*="toolbar"]'
   ];
-  let container = null;
-  for (const sel of targets) {
-    container = q(sel);
+  var container = null;
+  for (var i = 0; i < targets.length; i++) {
+    container = q(targets[i]);
     if (container) break;
   }
 
   if (!container) {
-    setTimeout(renderExportButton, 4000);
+    // If no container found yet, Apollo may still be loading — retry
+    if (!renderExportButton._retries) renderExportButton._retries = 0;
+    renderExportButton._retries++;
+    if (renderExportButton._retries < 10) {
+      setTimeout(renderExportButton, 3000);
+    }
     return;
   }
+  renderExportButton._retries = 0;
   container.append(btn);
 }
 
 // ─── Remove export button ─────────────────────────────────────────────────────
 function removeExportButton() {
-  q('.mogo--search-export-button')?.remove();
+  var el = q('.mogo--search-export-button');
+  if (el) el.remove();
   state.peopleList = [state.csvTitles];
   state.emailList = [];
 }
 
+// ─── Handle Apollo SPA navigation ────────────────────────────────────────────
+function handleRouteChange() {
+  var hash = window.location.hash || '';
+  if (hash.indexOf('/people') > -1) {
+    // On people search — show export button after DOM settles
+    setTimeout(renderExportButton, 2000);
+  } else {
+    removeExportButton();
+  }
+}
+
 // ─── Listen for storage/tab changes ──────────────────────────────────────────
-chrome.storage.onChanged.addListener((changes) => {
-  for (const [key, { newValue }] of Object.entries(changes)) {
+chrome.storage.onChanged.addListener(function(changes) {
+  for (var key in changes) {
+    if (!changes.hasOwnProperty(key)) continue;
+    var newValue = changes[key].newValue;
     if (key === 'export_status') {
       setExportStatus(newValue);
       if (newValue === 'finished') {
-        chrome.storage.sync.get(['apollo_duplicates'], ({ apollo_duplicates }) => {
-          if (apollo_duplicates) {
-            const warn = q('.findy--export-warning');
+        chrome.storage.sync.get(['apollo_duplicates'], function(data) {
+          if (data.apollo_duplicates) {
+            var warn = q('.findy--export-warning');
             if (warn) warn.style.display = 'block';
           }
         });
       }
     }
     if (key === 'current_tab_url') {
-      if (/^https:\/\/app\.apollo\.io\/#\/people/.test(newValue)) {
+      if (/^https:\/\/app\.apollo\.io/.test(newValue)) {
         setTimeout(renderExportButton, 2000);
       } else {
         removeExportButton();
@@ -684,19 +712,35 @@ chrome.storage.onChanged.addListener((changes) => {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (function init() {
+  console.log('[MOGO] Apollo content script loaded');
+
   // Inject the profile data extractor
-  const script = document.createElement('script');
+  var script = document.createElement('script');
   script.src = chrome.runtime.getURL('apollo_inject.js');
   (document.head || document.body || document.documentElement).appendChild(script);
 
   // Load modal components into storage cache
-  chrome.storage.sync.get(null, () => {
+  chrome.storage.sync.get(null, function() {
     chrome.storage.sync.set({
       authorization_status: 'is_authorized', // Always authorized
       export_status: 'waiting'
     });
   });
 
-  // Show export button after short delay (wait for Apollo to render)
-  setTimeout(renderExportButton, 3000);
-})();
+  // Listen for SPA hash route changes (Apollo uses hash routing)
+  window.addEventListener('hashchange', handleRouteChange);
+  window.addEventListener('popstate', handleRouteChange);
+
+  // Also watch for DOM-based navigation (React router can push without hashchange)
+  var lastHash = window.location.hash;
+  var routeObserver = new MutationObserver(function() {
+    if (window.location.hash !== lastHash) {
+      lastHash = window.location.hash;
+      handleRouteChange();
+    }
+  });
+  routeObserver.observe(document.body, { childList: true, subtree: true });
+
+  // Initial render after Apollo loads
+  handleRouteChange();
+})();
