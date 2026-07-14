@@ -29,8 +29,18 @@ const eventBus = document.createElement('a');
 let isExporting = false;
 
 // ─── Listen for popup trigger ─────────────────────────────────────────────────
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.msg === 'showExportModal') openExportModal();
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  try {
+    if (msg.msg === 'showExportModal') {
+      openExportModal();
+      sendResponse({ success: true });
+    } else {
+      sendResponse({ success: false, reason: 'unknown_message' });
+    }
+  } catch (e) {
+    sendResponse({ success: false, error: e.message });
+  }
+  return true; // Keep channel open
 });
 
 // ─── Local Email Finder (fallback if API offline) ────────────────────────────
@@ -390,7 +400,7 @@ function flipPage() {
 
 // ─── Start collection ─────────────────────────────────────────────────────────
 function startCollection(retryCount = 0, retryPage = 0) {
-  chrome.storage.sync.get(['export_status', 'peopleToExport'], ({ export_status, peopleToExport }) => {
+  chrome.storage.sync.get(['export_status', 'peopleToExport'], async ({ export_status, peopleToExport }) => {
     if (export_status === 'finished') return;
     chrome.storage.sync.set({ export_status: 'working' });
     setExportStatus('working');
@@ -437,7 +447,8 @@ function startCollection(retryCount = 0, retryPage = 0) {
       return;
     }
 
-    toProcess.forEach(async (person) => {
+    // Use for...of with await — forEach(async) does NOT await promises inside
+    for (const person of toProcess) {
       try {
         // Extract person fields
         const fullName   = cleanText(person.name || '');
@@ -555,10 +566,10 @@ function startCollection(retryCount = 0, retryPage = 0) {
         }
       } catch (err) {
         console.error('[MOGO] Person processing error:', err);
-        state.peopleList.push(new Array(22).fill(''));
+        state.peopleList.push(new Array(23).fill('')); // 23 columns to match csvTitles
         processed++;
       }
-    });
+    } // end for...of
 
     profilesEl.remove();
   });
@@ -662,12 +673,7 @@ function renderExportButton() {
     return;
   }
   renderExportButton._retries = 0;
-      if (container === document.body) {
-      btn.style.position = 'fixed';
-      btn.style.top = '100px';
-      btn.style.right = '20px';
-    }
-    container.append(btn);
+  container.append(btn);
 }
 
 // ─── Remove export button ─────────────────────────────────────────────────────

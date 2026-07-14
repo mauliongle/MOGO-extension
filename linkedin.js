@@ -228,7 +228,8 @@ function populateListDropdowns() {
     const select = querySelector('#findyListSelect');
     if (!select) return;
     while (select.childNodes.length > 1) select.removeChild(select.lastChild);
-    querySelector('#findyListSelect option').innerText = 'All contacts';
+    const firstOpt = querySelector('#findyListSelect option');
+    if (firstOpt) firstOpt.innerText = 'All contacts';
     lists.forEach(list => {
       if (list.id === 0) return;
       const option = document.createElement('option');
@@ -246,7 +247,8 @@ function populateListDropdowns() {
     fetchSalesNavLists().then(data => {
       const select = querySelector('#findyListSelectSN');
       if (!select) return;
-      querySelector('#findyListSelectSN option').innerText = '-- no list --';
+      const firstOptSN = querySelector('#findyListSelectSN option');
+      if (firstOptSN) firstOptSN.innerText = '-- no list --';
       while (select.childNodes.length > 1) select.removeChild(select.lastChild);
       if (data && data.elements) {
         data.elements.forEach(el => {
@@ -262,7 +264,7 @@ function populateListDropdowns() {
 
 // ========== Content Update ==========
 function updateContentForUrl(url, contentWidget) {
-  if (url === undefined) url = window.localStorage.href;
+  if (url === undefined) url = window.location.href;
   
   if (/^https:\/\/www.linkedin.com\/search\/results\/people/.test(url) ||
       /^https:\/\/www.linkedin.com\/sales\/search\/people/.test(url) ||
@@ -426,7 +428,8 @@ function showExportModal() {
         // Account search
         fetchSalesNavAccountLists().then(data => {
           const select = querySelector('#findyListSelect');
-          querySelector('#findyListSelect option').innerText = '-- no list --';
+          const snOpt = querySelector('#findyListSelect option');
+          if (snOpt) snOpt.innerText = '-- no list --';
           while (select.childNodes.length > 1) select.removeChild(select.lastChild);
           if (data && data.elements) {
             data.elements.forEach(el => {
