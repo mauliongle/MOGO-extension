@@ -62,12 +62,31 @@ function uniqueFilter(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-// Listen for messages from popup
+// Listen for messages from popup and background
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log(msg);
-  if (msg.msg === 'showExportModal') {
-    showExportModal();
+  console.log('[MOGO] Message received:', msg);
+
+  try {
+    if (msg.msg === 'showExportModal') {
+      showExportModal();
+      sendResponse({ success: true });
+    } else if (msg.msg === 'page_loaded') {
+      // Background sent a page_loaded signal — re-run content update
+      const url = window.location.href;
+      chrome.storage.sync.set({ current_tab_url: url });
+      updateContentForUrl(url);
+      sendResponse({ success: true });
+    } else {
+      // Unknown message — always respond to prevent channel-closed errors
+      sendResponse({ success: false, reason: 'unknown_message' });
+    }
+  } catch (e) {
+    console.error('[MOGO] onMessage handler error:', e);
+    sendResponse({ success: false, error: e.message });
   }
+
+  // Return true to keep the message channel open for async sendResponse calls
+  return true;
 });
 
 // Reference anchor for events
