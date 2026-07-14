@@ -1406,25 +1406,35 @@ function makeDraggable(widgetSel, handleSel) {
   const widget = document.querySelector(widgetSel);
   const handle = document.querySelector(handleSel);
   if (!widget || !handle) return;
-  let isDragging = false, startX, startY, x, y;
+  let isDragging = false, startX, startY, x = 0, y = 0;
+
+  // Initialize x/y from stored values so mouseup never writes undefined
+  chrome.storage.sync.get(['widgetX', 'widgetY'], function({ widgetX, widgetY }) {
+    x = widgetX || 0;
+    y = widgetY || 0;
+  });
+
   handle.addEventListener('mousedown', function(e) {
     isDragging = true;
     chrome.storage.sync.get(['widgetX', 'widgetY'], function({ widgetX, widgetY }) {
-      startX = e.clientX - widgetX;
-      startY = e.clientY - widgetY;
+      startX = e.clientX - (widgetX || 0);
+      startY = e.clientY - (widgetY || 0);
     });
   });
   document.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
     mogoState.dragging = true;
     document.body.style.userSelect = 'none';
-    x = e.clientX - startX;
-    y = e.clientY - startY;
+    x = e.clientX - (startX || 0);
+    y = e.clientY - (startY || 0);
     widget.style.transform = `translate(${x}px, ${y}px)`;
   });
   document.addEventListener('mouseup', function() {
     document.body.style.userSelect = '';
-    chrome.storage.sync.set({ widgetX: x, widgetY: y });
+    // Only save if a real drag happened (x and y are valid numbers)
+    if (mogoState.dragging && typeof x === 'number' && typeof y === 'number') {
+      chrome.storage.sync.set({ widgetX: x, widgetY: y });
+    }
     isDragging = false;
     setTimeout(() => { mogoState.dragging = false; }, 300);
   });

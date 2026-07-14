@@ -356,14 +356,18 @@ function showReadyOrProfile() {
 })();
 
 // Listen for enrichment results from background
-chrome.runtime.onMessage.addListener(function(msg, sender) {
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   if (msg.enrichment_result) {
     chrome.storage.sync.get(['enrichment_statuses'], function(data) {
       const statuses = data.enrichment_statuses || {};
       statuses[msg.tab] = msg.enrichment_result;
       chrome.storage.sync.set({ enrichment_statuses: statuses }, function() {
         showEnrichmentResult(msg.enrichment_result);
+        sendResponse({ success: true });
       });
     });
+  } else {
+    sendResponse({ success: false, reason: 'unknown_message' });
   }
+  return true; // Keep message channel open for async sendResponse
 });
