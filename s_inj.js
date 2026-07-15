@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     function processSalesData(r) {
         try {
             var jsonProfiles, allProfiles, accountObject, userObject;
@@ -234,14 +234,31 @@
     XHR.send = function(postData) {
         this.addEventListener('load', function() {
             if (this._url && (this._url.indexOf("salesApiAccountSearch") !== -1 || this._url.indexOf("salesApiLeadSearch") !== -1 || this._url.indexOf("salesApiProfiles") !== -1)) {
-                processSalesData({
-                    url: this._url,
-                    method: this._method,
-                    data: this.responseText,
-                    postData: postData
-                });
+                var xhr = this;
+                var blob = this.response; // response is a Blob when responseType = 'blob'
+                if (blob && blob instanceof Blob) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        processSalesData({
+                            url: xhr._url,
+                            method: xhr._method,
+                            data: reader.result,   // text content read from blob
+                            postData: postData
+                        });
+                    };
+                    reader.readAsText(blob);
+                } else {
+                    // Fallback to responseText if blob is not available
+                    processSalesData({
+                        url: this._url,
+                        method: this._method,
+                        data: this.responseText,
+                        postData: postData
+                    });
+                }
             }
         });
+        this.responseType = 'blob'; // Set blob type before sending
         return send.apply(this, arguments);
     };
 
