@@ -53,6 +53,22 @@ function loadComponent(path, container, replace) {
     });
 }
 
+// Clipboard fallback for Chrome 109 / Windows 7
+function copyTextFallback(text) {
+  try {
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  } catch (e) {
+    console.warn('[MOGO] Copy fallback failed:', e);
+  }
+}
+
 // ========== Local Lists Management ==========
 function getLocalLists() {
   return new Promise(resolve => {
@@ -114,12 +130,18 @@ function showEnrichmentResult(result) {
       if (result.company) document.getElementById('profileCompany').innerText = result.company;
       document.getElementById('profileEmail').innerText = result.email;
       
-      document.getElementById('copyEmailBtn').onclick = () => {
-        navigator.clipboard.writeText(result.email);
-        document.getElementById('profileEmail').innerText = 'copied!';
-        setTimeout(() => {
-          document.getElementById('profileEmail').innerText = result.email;
-        }, 1300);
+      document.getElementById('copyEmailBtn').onclick = function() {
+        var textEl = document.getElementById('profileEmail');
+        // Use clipboard API with fallback for Chrome 109 / Windows 7
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(result.email).catch(function() {
+            copyTextFallback(result.email);
+          });
+        } else {
+          copyTextFallback(result.email);
+        }
+        textEl.innerText = 'copied!';
+        setTimeout(function() { textEl.innerText = result.email; }, 1300);
       };
 
       document.getElementById('openContactListBtn').onclick = () => {
@@ -142,12 +164,17 @@ function showEnrichmentResult(result) {
       document.getElementById('foundLabel').innerText = 'Phone found';
       document.getElementById('copyOrContactLabel').innerText = '';
       
-      document.getElementById('copyEmailBtn').onclick = () => {
-        navigator.clipboard.writeText(result.phone_number);
-        document.getElementById('profileEmail').innerText = 'copied!';
-        setTimeout(() => {
-          document.getElementById('profileEmail').innerText = result.phone_number;
-        }, 1300);
+      document.getElementById('copyEmailBtn').onclick = function() {
+        var textEl = document.getElementById('profileEmail');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(result.phone_number).catch(function() {
+            copyTextFallback(result.phone_number);
+          });
+        } else {
+          copyTextFallback(result.phone_number);
+        }
+        textEl.innerText = 'copied!';
+        setTimeout(function() { textEl.innerText = result.phone_number; }, 1300);
       };
 
       document.querySelectorAll('.closeBtn').forEach(e => e.onclick = () => window.close());

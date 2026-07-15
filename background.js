@@ -40,13 +40,14 @@ const EmailGenerator = {
 };
 
 // Name cleaner - strips titles and suffixes
-String.prototype.ucwords = function() {
-  let str = this.toLowerCase();
-  return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) { return s.toLocaleUpperCase(); });
-};
+// Name case helper - standalone function (avoids prototype conflict with linkedin.js)
+function ucwords(str) {
+  var s = str.toLowerCase();
+  return s.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(ch) { return ch.toLocaleUpperCase(); });
+}
 
 function cleanPersonName(name) {
-  let cleaned = stripEmojis(name.ucwords());
+  let cleaned = stripEmojis(ucwords(name));
   cleaned = cleaned.replaceAll(/ *\([^)]*\) */g, '');
   cleaned = cleaned.replaceAll(/◆|►|☀|◌️|️/g, '').trim();
   cleaned = cleaned.replaceAll(/Dr\. |Dr |/g, '').trim();
@@ -58,7 +59,7 @@ function cleanPersonName(name) {
   cleaned = cleaned.split('-')[0];
   cleaned = cleaned.split('/')[0];
   cleaned = cleaned.split('►')[0].trim();
-  return cleaned.ucwords().trim();
+  return ucwords(cleaned).trim();
 }
 
 function stripEmojis(str = '') {
@@ -168,7 +169,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
           delete statuses[tabId];
           chrome.storage.sync.set({ linkedin_profiles: profiles, enrichment_statuses: statuses });
         });
-        chrome.tabs.sendMessage(tab.id, { msg: 'page_loaded' });
+        chrome.tabs.sendMessage(tab.id, { msg: 'page_loaded' }, function() {
+          if (chrome.runtime.lastError) {
+            // Content script not ready yet — ignore silently
+          }
+        });
       }
     }
     if (tab) lastUrl = tab.url;
@@ -280,11 +285,15 @@ function handleEmailRequest(tabId, profile, tabUrl) {
         chrome.storage.sync.set({ enrichment_statuses: s });
       });
 
-      // Send result to popup
+      // Send result to popup (only if popup is open)
       chrome.runtime.sendMessage({
         to: 'popup',
         enrichment_result: enrichmentResult,
         tab: tabId
+      }, function() {
+        if (chrome.runtime.lastError) {
+          // Popup was closed — result already saved to storage, no action needed
+        }
       });
     });
   });
@@ -314,6 +323,10 @@ function handlePhoneRequest(tabId, profile, tabUrl) {
         to: 'popup',
         enrichment_result: result,
         tab: tabId
+      }, function() {
+        if (chrome.runtime.lastError) {
+          // Popup was closed — ignore
+        }
       });
     });
   });
