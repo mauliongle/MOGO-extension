@@ -37,13 +37,13 @@
       "matches": ["https://*.linkedin.com/*"],
       "js": ["linkedin_profile.js"],
       "css": ["widget.css"],
-      "all_frames": true
+      "run_at": "document_idle"
     },
     {
       "matches": ["https://*.linkedin.com/sales/lead/*", "https://*.linkedin.com/sales/people/*"],
       "js": ["salesnav_profile.js"],
       "css": ["widget.css"],
-      "all_frames": true
+      "run_at": "document_idle"
     },
     {
       "matches": ["https://www.crunchbase.com/person/*"],

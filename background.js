@@ -176,16 +176,18 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
 });
 
 // ========== Message Handling ==========
-chrome.runtime.onMessage.addListener(function(msg, sender) {
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   if (msg.command !== undefined) {
     // Email request
     if (msg.command === 'request' && msg.tab && msg.profile) {
       handleEmailRequest(msg.tab, msg.profile, msg.tabUrl);
+      sendResponse({ success: true });
       return true;
     }
     // Phone request
     if (msg.command === 'phone_request' && msg.tab && msg.profile) {
       handlePhoneRequest(msg.tab, msg.profile, msg.tabUrl);
+      sendResponse({ success: true });
       return true;
     }
   }
@@ -198,7 +200,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender) {
     chrome.storage.sync.get(['linkedin_profiles'], function(data) {
       const profiles = data.linkedin_profiles || {};
       profiles[sender.tab.id] = msg.profile;
-      
+
       // Keep max 5 profiles
       const entries = Object.entries(profiles);
       let cleanedProfiles = profiles;
@@ -206,11 +208,16 @@ chrome.runtime.onMessage.addListener(function(msg, sender) {
         const sorted = entries.sort((a, b) => parseInt(b[0]) - parseInt(a[0])).slice(0, 5);
         cleanedProfiles = Object.fromEntries(sorted);
       }
-      
-      chrome.storage.sync.set({ linkedin_profiles: cleanedProfiles });
+
+      chrome.storage.sync.set({ linkedin_profiles: cleanedProfiles }, function() {
+        sendResponse({ success: true });
+      });
     });
+    return true; // Keep channel open for async sendResponse
   }
 
+  // Unknown message — always respond to prevent channel-closed errors
+  sendResponse({ success: false, reason: 'unknown_message' });
   return true;
 });
 

@@ -87,12 +87,20 @@ function addContactToList(listId, contact) {
 // ========== Handle Tab State ==========
 function checkCurrentTab(tab) {
   if (apolloRegex.test(tab.url)) {
-    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' });
-    window.close();
+    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' }, function() {
+      // Wait for message to be delivered before closing
+      if (chrome.runtime.lastError) {
+        console.warn('[MOGO] sendMessage error:', chrome.runtime.lastError.message);
+      }
+      window.close();
+    });
   } else if (salesNavSearchRegex.test(tab.url) || linkedinSearchRegex.test(tab.url) || postsRegex.test(tab.url)) {
-    // Search page - show export modal
-    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' });
-    window.close();
+    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' }, function() {
+      if (chrome.runtime.lastError) {
+        console.warn('[MOGO] sendMessage error:', chrome.runtime.lastError.message);
+      }
+      window.close();
+    });
   } else {
     showReadyOrProfile();
   }
@@ -201,7 +209,7 @@ function showProfileView() {
             const name = document.getElementById('listnameInput').value;
             if (name) {
               createLocalList(name).then(newList => {
-                chrome.storage.sync.set({ autoSelectContactList: newList.id }).then(() => {
+                chrome.storage.sync.set({ autoSelectContactList: newList.id }, function() {
                   showReadyOrProfile();
                 });
               });
