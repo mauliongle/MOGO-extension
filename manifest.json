@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MOGO - Email & Phone Finder",
   "description": "Find anyone's B2B email and phone in seconds. Scrape LinkedIn Sales Navigator data with one click.",
-  "version": "2.0.0",
+  "version": "2.10.0",
   "author": "MOGO",
 
   "content_security_policy": {
