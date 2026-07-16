@@ -101,26 +101,66 @@ function addContactToList(listId, contact) {
 }
 
 // ========== Handle Tab State ==========
-function checkCurrentTab(tab) {
-  if (apolloRegex.test(tab.url)) {
-    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' }, function() {
-      // Wait for message to be delivered before closing
-      if (chrome.runtime.lastError) {
-        console.warn('[MOGO] sendMessage error:', chrome.runtime.lastError.message);
+function sendMessageToTab(tabId, message, scriptFile, callback) {
+  chrome.tabs.sendMessage(tabId, message, function(response) {
+    if (chrome.runtime.lastError) {
+      // Content script not loaded — try injecting it first
+      if (chrome.scripting && scriptFile) {
+        chrome.scripting.executeScript(
+          { target: { tabId: tabId }, files: [scriptFile] },
+          function() {
+            if (chrome.runtime.lastError) {
+              // Injection failed (e.g. chrome:// page) — just show popup
+              console.warn('[MOGO] Script injection failed:', chrome.runtime.lastError.message);
+              if (callback) callback(false);
+              return;
+            }
+            // Retry message after injection
+            setTimeout(function() {
+              chrome.tabs.sendMessage(tabId, message, function() {
+                if (chrome.runtime.lastError) {
+                  console.warn('[MOGO] Retry sendMessage failed:', chrome.runtime.lastError.message);
+                }
+                if (callback) callback(false);
+              });
+            }, 400);
+          }
+        );
+      } else {
+        console.warn('[MOGO] sendMessage failed:', chrome.runtime.lastError.message);
+        if (callback) callback(false);
       }
-      window.close();
+    } else {
+      if (callback) callback(true);
+    }
+  });
+}
+
+function checkCurrentTab(tab) {
+  if (!tab || !tab.url) { showReadyOrProfile(); return; }
+
+  if (apolloRegex.test(tab.url)) {
+    sendMessageToTab(tab.id, { msg: 'showExportModal' }, 'apollo.js', function(sent) {
+      if (sent) {
+        window.close();
+      } else {
+        // Content script couldn't be reached — show ready state
+        showReady();
+      }
     });
   } else if (salesNavSearchRegex.test(tab.url) || linkedinSearchRegex.test(tab.url) || postsRegex.test(tab.url)) {
-    chrome.tabs.sendMessage(tab.id, { msg: 'showExportModal' }, function() {
-      if (chrome.runtime.lastError) {
-        console.warn('[MOGO] sendMessage error:', chrome.runtime.lastError.message);
+    sendMessageToTab(tab.id, { msg: 'showExportModal' }, 'linkedin.js', function(sent) {
+      if (sent) {
+        window.close();
+      } else {
+        showReady();
       }
-      window.close();
     });
   } else {
     showReadyOrProfile();
   }
 }
+
 
 // ========== Show enrichment result ==========
 function showEnrichmentResult(result) {

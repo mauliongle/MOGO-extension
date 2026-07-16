@@ -56,7 +56,7 @@
     "service_worker": "background.js"
   },
 
-  "permissions": ["storage", "tabs", "clipboardWrite"],
+  "permissions": ["storage", "tabs", "clipboardWrite", "scripting"],
 
   "host_permissions": [
     "https://*.linkedin.com/*",
