@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MOGO Popup Script
  * No login/auth required. Directly handles profile enrichment and navigation.
  */
@@ -104,13 +104,13 @@ function addContactToList(listId, contact) {
 function sendMessageToTab(tabId, message, scriptFile, callback) {
   chrome.tabs.sendMessage(tabId, message, function(response) {
     if (chrome.runtime.lastError) {
-      // Content script not loaded — try injecting it first
+      // Content script not loaded â€” try injecting it first
       if (chrome.scripting && scriptFile) {
         chrome.scripting.executeScript(
           { target: { tabId: tabId }, files: [scriptFile] },
           function() {
             if (chrome.runtime.lastError) {
-              // Injection failed (e.g. chrome:// page) — just show popup
+              // Injection failed (e.g. chrome:// page) â€” just show popup
               console.warn('[MOGO] Script injection failed:', chrome.runtime.lastError.message);
               if (callback) callback(false);
               return;
@@ -144,7 +144,7 @@ function checkCurrentTab(tab) {
       if (sent) {
         window.close();
       } else {
-        // Content script couldn't be reached — show ready state
+        // Content script couldn't be reached â€” show ready state
         showReady();
       }
     });
@@ -165,7 +165,7 @@ function checkCurrentTab(tab) {
 // ========== Show enrichment result ==========
 function showEnrichmentResult(result) {
   if (result.email) {
-    loadComponent('components/profile-enrichment-completed.html', document.getElementById('dynamic-content'), true).then(() => {
+    loadComponent('components/profile-enrichment-completed.html', document.body, true).then(() => {
       if (result.name) document.getElementById('profileName').innerText = result.name;
       if (result.company) document.getElementById('profileCompany').innerText = result.company;
       document.getElementById('profileEmail').innerText = result.email;
@@ -197,7 +197,7 @@ function showEnrichmentResult(result) {
       document.getElementById('backBtn').onclick = showReadyOrProfile;
     });
   } else if (result.phone_number) {
-    loadComponent('components/profile-enrichment-completed.html', document.getElementById('dynamic-content'), true).then(() => {
+    loadComponent('components/profile-enrichment-completed.html', document.body, true).then(() => {
       if (result.name) document.getElementById('profileName').innerText = result.name;
       if (result.company) document.getElementById('profileCompany').innerText = result.company;
       document.getElementById('profileEmail').innerText = result.phone_number;
@@ -221,7 +221,7 @@ function showEnrichmentResult(result) {
       document.getElementById('backBtn').onclick = showReadyOrProfile;
     });
   } else {
-    loadComponent('components/profile-enrichment-notfound.html', document.getElementById('dynamic-content'), true).then(() => {
+    loadComponent('components/profile-enrichment-notfound.html', document.body, true).then(() => {
       if (result.name) document.getElementById('profileName').innerText = result.name;
       if (result.company) document.getElementById('profileCompany').innerText = result.company;
       document.querySelectorAll('.closeBtn').forEach(e => e.onclick = () => window.close());
@@ -239,7 +239,7 @@ function showProfileView() {
       return;
     }
 
-    loadComponent('/components/linkedin-profile.html', document.getElementById('dynamic-content'), true).then(() => {
+    loadComponent('/components/linkedin-profile.html', document.body, true).then(() => {
       // Load stored profile data for this tab
       chrome.storage.sync.get(['linkedin_profiles'], function(data) {
         const profiles = data.linkedin_profiles || {};
@@ -263,14 +263,14 @@ function showProfileView() {
       });
 
       // Credits display - show "Unlimited"
-      document.getElementById('finderCreditsBalance').innerText = '∞ Unlimited';
+      document.getElementById('finderCreditsBalance').innerText = 'âˆž Unlimited';
 
       // Close button
       document.getElementById('closeBtn').onclick = () => window.close();
 
       // Create list button
       document.getElementById('createListBtn').onclick = () => {
-        loadComponent('/components/create-list-profile.html', document.getElementById('dynamic-content'), true).then(() => {
+        loadComponent('/components/create-list-profile.html', document.body, true).then(() => {
           document.getElementById('cancelBtn').onclick = showReadyOrProfile;
           document.getElementById('createListConfirmBtn').onclick = () => {
             const name = document.getElementById('listnameInput').value;
@@ -305,7 +305,7 @@ function handleGetEmail() {
       const profile = profiles[tab.id] || {};
       const listId = document.getElementById('findyListSelect')?.value || 0;
 
-      loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true).then(() => {
+      loadComponent('/components/profile-enrichment-loading.html', document.body, true).then(() => {
         // Generate email locally
         const result = EmailGen.fromFullName(profile.name, profile.domain || profile.company);
         
@@ -350,7 +350,7 @@ function handleGetPhone() {
       const profiles = data.linkedin_profiles || {};
       const profile = profiles[tab.id] || {};
 
-      loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true).then(() => {
+      loadComponent('/components/profile-enrichment-loading.html', document.body, true).then(() => {
         document.getElementById('lookingLabel').innerText = 'Looking for a phone...';
         
         setTimeout(() => {
@@ -368,21 +368,21 @@ function handleGetPhone() {
 
 // ========== Show Ready State ==========
 function showReady() {
-  const container = document.getElementById('dynamic-content');
-  if (container) {
-    container.innerHTML = `
-      <div class="content" id="ready-view">
-        <div class="title">MOGO extension is active</div>
-        <div class="subtitle">Visit a <b>LinkedIn</b>, <b>Sales Navigator</b>, or <b>Apollo.io</b> search page to extract contacts.</div>
-        <div class="badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E84C4B" stroke-width="2">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-          No login required — unlimited access
-        </div>
-      </div>
-    `;
-  }
+  document.body.innerHTML = document.body.innerHTML.split('<div class="content"')[0] || document.body.innerHTML;
+  var container = document.createElement('div');
+  container.className = 'content';
+  container.id = 'ready-view';
+  container.innerHTML = `
+    <div class="title">MOGO extension is active</div>
+    <div class="subtitle">Visit a <b>LinkedIn</b>, <b>Sales Navigator</b>, or <b>Apollo.io</b> search page to extract contacts.</div>
+    <div class="badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E84C4B" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      No login required â€” unlimited access
+    </div>
+  `;
+  document.body.appendChild(container);
 }
 
 // ========== Main: Show Ready or Profile ==========
@@ -417,7 +417,7 @@ function showReadyOrProfile() {
       if (data.enrichment_statuses && (linkedinProfileRegex.test(tab.url) || isSalesNavProfile(tab.url))) {
         const status = data.enrichment_statuses[tab.id];
         if (status === 'loading') {
-          loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true);
+          loadComponent('/components/profile-enrichment-loading.html', document.body, true);
         } else if (status && typeof status === 'object') {
           showEnrichmentResult(status);
         } else {
@@ -446,3 +446,4 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   }
   return true; // Keep message channel open for async sendResponse
 });
+
