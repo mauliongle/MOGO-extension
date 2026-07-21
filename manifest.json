@@ -34,16 +34,15 @@
       "matches": ["https://app.apollo.io/*"]
     },
     {
-      "matches": ["https://*.linkedin.com/*"],
+      "matches" : ["https://*.linkedin.com/*"],
       "js": ["linkedin_profile.js"],
       "css": ["widget.css"],
-      "run_at": "document_idle"
+      "all_frames": true
     },
     {
-      "matches": ["https://*.linkedin.com/sales/lead/*", "https://*.linkedin.com/sales/people/*"],
+      "matches" : ["https://*.linkedin.com/sales/lead/*"],
       "js": ["salesnav_profile.js"],
-      "css": ["widget.css"],
-      "run_at": "document_idle"
+      "all_frames": true
     },
     {
       "matches": ["https://www.crunchbase.com/person/*"],

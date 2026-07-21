@@ -303,39 +303,24 @@ function handleGetEmail() {
     chrome.storage.sync.get(['linkedin_profiles'], function(data) {
       const profiles = data.linkedin_profiles || {};
       const profile = profiles[tab.id] || {};
-      const listId = document.getElementById('findyListSelect')?.value || 0;
+      if (!profile || !profile.name) return;
 
-      loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true).then(() => {
-        // Generate email locally
-        const result = EmailGen.fromFullName(profile.name, profile.domain || profile.company);
-        
-        setTimeout(() => {
-          if (result.primary) {
-            const contact = {
-              name: profile.name,
-              company: profile.company,
-              email: result.primary,
-              allEmails: result.emails,
-              linkedin_url: tab.url,
-              found_at: new Date().toISOString()
-            };
+      profile.list = document.getElementById('findyListSelect')?.value || 0;
 
-            // Save to local list
-            addContactToList(listId, contact);
-
-            // Save enrichment status
-            chrome.storage.sync.get(['enrichment_statuses'], function(d) {
-              const statuses = d.enrichment_statuses || {};
-              statuses[tab.id] = contact;
-              chrome.storage.sync.set({ enrichment_statuses: statuses });
-            });
-
-            showEnrichmentResult(contact);
-          } else {
-            showEnrichmentResult({ name: profile.name, company: profile.company });
-          }
-        }, 1500); // Simulate brief loading
+      // Send to background script (which calls local API + fallback)
+      chrome.runtime.sendMessage({
+        to: 'bg',
+        command: 'request',
+        tab: tab.id.toString(),
+        profile: profile,
+        tabUrl: tab.url
+      }, function() {
+        if (chrome.runtime.lastError) {
+          console.warn('[MOGO] sendMessage to bg failed:', chrome.runtime.lastError.message);
+        }
       });
+
+      loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true);
     });
   });
 }
@@ -349,18 +334,26 @@ function handleGetPhone() {
     chrome.storage.sync.get(['linkedin_profiles'], function(data) {
       const profiles = data.linkedin_profiles || {};
       const profile = profiles[tab.id] || {};
+      if (!profile || !profile.name) return;
+
+      profile.list = document.getElementById('findyListSelect')?.value || 0;
+
+      // Send to background script
+      chrome.runtime.sendMessage({
+        to: 'bg',
+        command: 'phone_request',
+        tab: tab.id.toString(),
+        profile: profile,
+        tabUrl: tab.url
+      }, function() {
+        if (chrome.runtime.lastError) {
+          console.warn('[MOGO] sendMessage to bg failed:', chrome.runtime.lastError.message);
+        }
+      });
 
       loadComponent('/components/profile-enrichment-loading.html', document.getElementById('dynamic-content'), true).then(() => {
-        document.getElementById('lookingLabel').innerText = 'Looking for a phone...';
-        
-        setTimeout(() => {
-          // Phone numbers can't be generated locally, show not found
-          showEnrichmentResult({
-            name: profile.name,
-            company: profile.company,
-            phone_number: null
-          });
-        }, 1500);
+        var label = document.getElementById('lookingLabel');
+        if (label) label.innerText = 'Looking for a phone...';
       });
     });
   });

@@ -182,15 +182,14 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
 
 // ========== Message Handling ==========
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-  if (msg.command !== undefined) {
-    // Email request
-    if (msg.command === 'request' && msg.tab && msg.profile) {
+  // Route messages intended for background (popup sends {to:'bg', command:'...'})
+  if (msg.command !== undefined || (msg.to === 'bg' && msg.command !== undefined)) {
+    if ((msg.command === 'request') && msg.tab && msg.profile) {
       handleEmailRequest(msg.tab, msg.profile, msg.tabUrl);
       sendResponse({ success: true });
       return true;
     }
-    // Phone request
-    if (msg.command === 'phone_request' && msg.tab && msg.profile) {
+    if ((msg.command === 'phone_request') && msg.tab && msg.profile) {
       handlePhoneRequest(msg.tab, msg.profile, msg.tabUrl);
       sendResponse({ success: true });
       return true;
@@ -200,7 +199,8 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   // LinkedIn profile detected by content script
   if (msg.msg === 'linkedin_profile') {
     msg.profile.name = cleanPersonName(msg.profile.name);
-    msg.profile.linkedin_url = lastUrl;
+    // Use sender.tab.url directly to avoid race conditions with lastUrl
+    msg.profile.linkedin_url = (sender && sender.tab) ? sender.tab.url : lastUrl;
 
     chrome.storage.sync.get(['linkedin_profiles'], function(data) {
       const profiles = data.linkedin_profiles || {};
