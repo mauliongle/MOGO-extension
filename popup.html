@@ -8,18 +8,23 @@
     body {
       margin: 0;
       font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      min-width: 392px;
+      min-width: 344px;
       background: white;
     }
-    .header {
+    #mogo-header {
+      width: 344px;
       padding: 16px;
-      display: flex;
+      box-sizing: border-box;
       justify-content: center;
       align-items: center;
+      display: flex;
     }
     .logo-text-mo { color: #111827; font-size: 24px; font-family: Nunito; font-weight: 700; }
     .logo-text-go { color: #E84C4B; font-size: 24px; font-family: Nunito; font-weight: 700; }
+    .logo-img { padding-left: 5px; height: 24px; }
+    #dynamic-content { width: 344px; }
 
+    /* Component styles */
     .content {
       padding: 24px;
       display: flex;
@@ -55,12 +60,14 @@
 </head>
 
 <body style="margin: 0px;">
-  <div style="width: 344px; padding: 16px; justify-content: center; align-items: flex-start; gap: 8px; display: inline-flex">
-    <div style="width: 137px; justify-content: center; align-items: center; display: flex">
-      <span class="logo-text-mo">MO</span><span class="logo-text-go">GO</span>
-      <img style="padding-left: 5px;" src="images/logo.png" height="24px">
-    </div>
+  <!-- Persistent header — never replaced by JS -->
+  <div id="mogo-header">
+    <span class="logo-text-mo">MO</span><span class="logo-text-go">GO</span>
+    <img class="logo-img" src="icons/icon48.png" onerror="this.style.display='none'">
   </div>
+
+  <!-- Dynamic content area — replaced by popup.js -->
+  <div id="dynamic-content"></div>
 </body>
 
 </html>
