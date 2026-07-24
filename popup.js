@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MOGO Popup Script
  * No login/auth required. Directly handles profile enrichment and navigation.
  */
@@ -439,5 +439,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   }
   return true; // Keep message channel open for async sendResponse
 });
+
 
 

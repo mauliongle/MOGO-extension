@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     // URL targets to intercept - matching Findymail reference implementation
     var urlTargets = [
         '/sales-api/salesApiProfiles',
@@ -221,12 +221,36 @@
                 try {
                     var url = self._mogoUrl || '';
                     var matched = urlTargets.filter(function(t) { return url.indexOf(t) > -1; });
-                    if (matched.length > 0) {
-                        // Use responseText directly (responseType is '' by default = text)
-                        processSalesData(self.responseText, url);
+                    if (matched.length === 0) return;
+
+                    var responseType = self.responseType || '';
+                    var text = null;
+
+                    if (responseType === '' || responseType === 'text') {
+                        // Safe to read responseText directly
+                        text = self.responseText;
+                    } else if (responseType === 'json') {
+                        // responseText throws DOMException when responseType='json'
+                        // Use response object and stringify it instead
+                        try {
+                            text = self.response !== null ? JSON.stringify(self.response) : null;
+                        } catch (jsonErr) {
+                            // response not serialisable — skip
+                            return;
+                        }
+                    } else {
+                        // blob / arraybuffer — cannot be profile JSON, skip
+                        return;
+                    }
+
+                    if (text) {
+                        processSalesData(text, url);
                     }
                 } catch (e) {
-                    console.error('[MOGO] XHR load error:', e);
+                    // Silently ignore — don't spam console for non-target requests
+                    if (e && e.name !== 'InvalidStateError') {
+                        console.warn('[MOGO] XHR interceptor skipped:', e.name || e);
+                    }
                 }
             });
             return send.apply(this, arguments);
